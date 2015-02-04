@@ -2,10 +2,9 @@
 <resources>
 
     <string name="app_name">RadioTape</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="title_ascolta">Ascolta</string>
+    <string name="title_scrivi">Scrivici</string>
+    <string name="title_info">Info</string>
     <string name="action_settings">Settings</string>
 
 </resources>
