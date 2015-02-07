@@ -1,5 +1,6 @@
 package com.mrpaloma.radiotape;
 
+import android.app.Activity;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -8,6 +9,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -16,6 +18,9 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+
+import org.ksoap2.serialization.PropertyInfo;
+import org.ksoap2.serialization.SoapObject;
 
 import java.io.IOException;
 
@@ -44,7 +49,59 @@ public class ServiceListen extends Service {
 
     private Boolean loopWork = false;
     public void setStopThread() {loopWork = false;}
-    private int percentBuffering = 0;
+
+    public static String PARAM_PALINSESTO_NOW = "1";
+    public static String PARAM_PALINSESTO_ALL = "";
+
+    protected Palinsesto palinsestoToday = new Palinsesto();
+    public Palinsesto getPalinsestoToday() {return palinsestoToday;}
+
+    protected Palinsesto palinsestoAll = new Palinsesto();
+    public Palinsesto getPalinsestoAll() {return palinsestoAll;}
+
+    public void invokeWSPalinsesto(String sParam){
+        final String sParamWs = sParam;
+
+        AsyncTask<Void, Void, Void> mSendEmailTask  = new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... arg0) {
+                PropertyInfo[] piParam = new PropertyInfo[1];
+
+                piParam[0] = new PropertyInfo();
+                piParam[0].setName("sParam");
+                piParam[0].setValue(sParamWs);
+                piParam[0].setType(String.class);
+
+                SoapObject response = UtilsFunction.CallWebService(oActivity, "GetPalinsesto", piParam);
+                SoapObject resultWs = (SoapObject) response.getProperty(1);
+
+                for(int i=0; i<resultWs.getPropertyCount(); i++) {
+                    SoapObject giorno = (SoapObject) resultWs.getProperty(i);
+
+                    int iOrdinamento = i;
+
+                    String sGiorno = giorno.getPropertyAsString(3);
+
+                    String sOraInizio = giorno.getPropertyAsString(2).toString();
+                    String sTitolo = giorno.getPropertyAsString(0).toString();
+                    String sDescrizione = giorno.getPropertyAsString(1).toString();
+
+                    String sImage = giorno.getPropertyAsString(4).toString();
+
+                    Palinsesto.Giorno toDayPalinsesto = new Palinsesto.Giorno(iOrdinamento, sGiorno, sOraInizio, sTitolo, sDescrizione, sImage);
+                    if (sParamWs.equals(PARAM_PALINSESTO_NOW))palinsestoToday.addItem(toDayPalinsesto);
+                    if (sParamWs.equals(PARAM_PALINSESTO_ALL))palinsestoAll.addItem(toDayPalinsesto);
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void result) {}
+
+        }.execute(null, null, null);
+    }
 
     /**
      * Class for clients to access.  Because we know this service always
@@ -105,10 +162,10 @@ public class ServiceListen extends Service {
             showNotification(text);
 
             // inizializzo player
-            initializeMediaPlayer();
+            if (player == null) initializeMediaPlayer();
 
             // avvio player
-            startPlaying();
+            if ((player!=null) && (!player.isPlaying())) startPlaying();
 
         } catch (Exception e) {
             EasyTrackerCustom.AddException(null, e, EasyTrackerCustom.TRACK_SERVICELISTEN);
@@ -137,8 +194,36 @@ public class ServiceListen extends Service {
                     SendMessageStartService();
 
                     int timeSleep = 3000;
+                    int callWsPalinsesto = 0;
+                    boolean allPalinsesto = true;
+
+                    // controllo se ho tutti i parametri valorizzati
+                    try { while ((oActivity == null)) { Thread.sleep(100); } } catch (Exception e) { Log.d(MainActivity.CODE_LOG, "Listen wait param service " + e.getMessage()); }
+
+                    // cycle
                     while (loopWork) {
                         SendMessagePlayingMusic();
+
+                        // controllo se devo chiamare il palinsesto
+                        if ((callWsPalinsesto == 0) && (oActivity != null)) {
+                            if (BaseActivity.getIsConnection(oActivity)) {
+                                if (palinsestoToday != null) palinsestoToday.ITEMS.clear();
+                                invokeWSPalinsesto(PARAM_PALINSESTO_NOW);
+                            }
+                            callWsPalinsesto++;
+
+                        } else {
+                            callWsPalinsesto++;
+                            if (callWsPalinsesto > 10) callWsPalinsesto = 0;
+                        }
+
+                        // controllo tutto il palinsesto
+                        if (allPalinsesto)                       {
+                            if (palinsestoAll != null) palinsestoAll.ITEMS.clear();
+
+                            invokeWSPalinsesto(PARAM_PALINSESTO_ALL);
+                            allPalinsesto = false;
+                        }
 
                         Thread.sleep(timeSleep);
                     }
@@ -244,8 +329,6 @@ public class ServiceListen extends Service {
     private void initializeMediaPlayer() {
 
         try {
-            percentBuffering = 0;
-
             player = new MediaPlayer();
             player.setDataSource(getResources().getString(R.string.urlRadio));
 
@@ -256,13 +339,12 @@ public class ServiceListen extends Service {
         player.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
 
             public void onBufferingUpdate(MediaPlayer mp, int percent) {
-                percentBuffering = percent;
                 Log.i("Buffering", "" + percent);
             }
         });
     }
 
-    private void startPlaying() {
+    public void startPlaying() {
         if (player == null) return;
 
         player.prepareAsync();
@@ -283,9 +365,11 @@ public class ServiceListen extends Service {
         }
     }
 
-    private void pausePlaying() {
-        if (player.isPlaying()) {
-            player.stop();
+    public void pausePlaying() {
+        if (player != null) {
+            if (player.isPlaying()) {
+                player.stop();
+            }
         }
     }
 

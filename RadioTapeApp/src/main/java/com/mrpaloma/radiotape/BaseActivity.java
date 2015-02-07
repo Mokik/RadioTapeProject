@@ -7,11 +7,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.widget.TextView;
+
+import org.ksoap2.serialization.PropertyInfo;
+import org.ksoap2.serialization.SoapObject;
 
 /**
  * Created by MicheleMaccini on 04/02/2015.
@@ -21,8 +26,9 @@ public class BaseActivity extends ActionBarActivity {
     public static String CODE_LOG = "RadioTape";
 
     private Handler updateHandler = new Handler();
-    private ServiceListen srvListen = null;
+    protected ServiceListen srvListen = null;
     private boolean bindedListening = false;
+    protected Activity oActivity = null;
     Intent serviceIntentListen = null;
 
     // controllo se ho la connessione dei dati
@@ -50,6 +56,30 @@ public class BaseActivity extends ActionBarActivity {
         return isInternetPresent;
     }
 
+    public void StopListen() {
+        if (srvListen != null) { srvListen.setStopThread(); }
+
+        StopListenService();
+
+        // disconnetto il servizio
+        if ((mConnection != null) && (srvListen != null)) disconnectServiceListening();
+        serviceIntentListen = null;
+    }
+
+    public void PauseListen() {
+        if (srvListen != null) {
+            srvListen.pausePlaying();
+        }
+    }
+
+    public void PlayListen() {
+        if (srvListen != null) {
+            srvListen.startPlaying();
+        }
+    }
+
+    protected void updateControl() {}
+
     @Override
     public void onStart() {
         super.onStart();
@@ -59,9 +89,7 @@ public class BaseActivity extends ActionBarActivity {
         if (updateHandler == null) updateHandler = new Handler();
         if (updateHandler != null) updateHandler.postDelayed(updateTimerThread, 200);
 
-        // controllo se è stato avviato un servizio per inviare itinerario
-        serviceIntentListen = new Intent(this, ServiceListen.class);
-        StartListenService();
+        oActivity = this;
     }
 
     @Override
@@ -72,12 +100,6 @@ public class BaseActivity extends ActionBarActivity {
 
         if (updateHandler != null) updateHandler.removeCallbacks(updateTimerThread);
         updateHandler = null;
-
-        StopListenService();
-
-        // disconnetto il servizio
-        if ((mConnection != null) && (srvListen != null)) disconnectServiceListening();
-        serviceIntentListen = null;
     }
 
     @Override
@@ -93,8 +115,7 @@ public class BaseActivity extends ActionBarActivity {
 
     private Runnable updateTimerThread = new Runnable() {
         public void run() {
-
-
+            updateControl(); // override
 
             updateHandler.postDelayed(this, 900);
         }
@@ -165,7 +186,6 @@ public class BaseActivity extends ActionBarActivity {
                 if (!playingMusic) {
                     playingMusic = playingMusic;
                 }
-
 
             } catch (Exception e) {
                 EasyTrackerCustom.AddException((BaseActivity)context, e, "ricezione messagio servicelisten");
