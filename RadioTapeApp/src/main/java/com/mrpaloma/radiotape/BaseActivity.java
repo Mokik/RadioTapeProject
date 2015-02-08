@@ -31,6 +31,8 @@ public class BaseActivity extends ActionBarActivity {
     protected Activity oActivity = null;
     Intent serviceIntentListen = null;
 
+    protected Boolean playingMusic = false;
+
     // controllo se ho la connessione dei dati
     public static Boolean getIsConnection(Activity oActivity) {
         return checkConnection(oActivity);
@@ -79,6 +81,18 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     protected void updateControl() {}
+
+    protected void StartActivitySetting() {
+
+        // Avvio la nuova Activity
+        Intent detailIntent = new Intent(this, SettingActivity.class);
+        //detailIntent.putExtra(PARAM_UNIQUECODE, "");
+        //detailIntent.putExtra(PARAM_ANDROIDCODE, sCodiceAndroid);
+
+        startActivity(detailIntent);
+        finish();
+
+    }
 
     @Override
     public void onStart() {
@@ -174,18 +188,10 @@ public class BaseActivity extends ActionBarActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Boolean stopServiceDefault = false;
-            Boolean startServiceDefault = false;
-            Boolean playingMusicDefault = false;
-
             try {
-                Boolean stopService = intent.getBooleanExtra(ServiceListen.NAME_MESSAGE_STOPSERVICE, stopServiceDefault);
-                Boolean startService = intent.getBooleanExtra(ServiceListen.NAME_MESSAGE_STARTSERVICE, startServiceDefault);
-                Boolean playingMusic = intent.getBooleanExtra(ServiceListen.NAME_MESSAGE_PLAYINGMUSIC, playingMusicDefault);
-
-                if (!playingMusic) {
-                    playingMusic = playingMusic;
-                }
+                Boolean stopService = intent.getBooleanExtra(ServiceListen.NAME_MESSAGE_STOPSERVICE, false);
+                Boolean startService = intent.getBooleanExtra(ServiceListen.NAME_MESSAGE_STARTSERVICE, false);
+                playingMusic = intent.getBooleanExtra(ServiceListen.NAME_MESSAGE_PLAYINGMUSIC, false);
 
             } catch (Exception e) {
                 EasyTrackerCustom.AddException((BaseActivity)context, e, "ricezione messagio servicelisten");

@@ -6,7 +6,18 @@
     <ListView
         android:id="@+id/listPalinsesto"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
     </ListView>
+
+    <TextView
+        android:id="@+id/txtLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/Marg20"
+        android:textSize="@dimen/SizeTextLoading"
+        android:text="loading..."></TextView>
 
 </LinearLayout>

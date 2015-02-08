@@ -56,8 +56,8 @@ public class ServiceListen extends Service {
     protected Palinsesto palinsestoToday = new Palinsesto();
     public Palinsesto getPalinsestoToday() {return palinsestoToday;}
 
-    protected Palinsesto palinsestoAll = new Palinsesto();
-    public Palinsesto getPalinsestoAll() {return palinsestoAll;}
+    protected PalinsestoAll palinsestoAll = new PalinsestoAll();
+    public PalinsestoAll getPalinsestoAll() {return palinsestoAll;}
 
     public void invokeWSPalinsesto(String sParam){
         final String sParamWs = sParam;
@@ -89,9 +89,15 @@ public class ServiceListen extends Service {
 
                     String sImage = giorno.getPropertyAsString(4).toString();
 
-                    Palinsesto.Giorno toDayPalinsesto = new Palinsesto.Giorno(iOrdinamento, sGiorno, sOraInizio, sTitolo, sDescrizione, sImage);
-                    if (sParamWs.equals(PARAM_PALINSESTO_NOW))palinsestoToday.addItem(toDayPalinsesto);
-                    if (sParamWs.equals(PARAM_PALINSESTO_ALL))palinsestoAll.addItem(toDayPalinsesto);
+                    if (sParamWs.equals(PARAM_PALINSESTO_NOW)){
+                        Palinsesto.Giorno toDayPalinsesto = new Palinsesto.Giorno(iOrdinamento, sGiorno, sOraInizio, sTitolo, sDescrizione, sImage);
+                        palinsestoToday.addItem(toDayPalinsesto);
+                    }
+
+                    if (sParamWs.equals(PARAM_PALINSESTO_ALL)) {
+                        PalinsestoAll.Giorno allPalinsesto = new PalinsestoAll.Giorno(iOrdinamento, sGiorno, sOraInizio, sTitolo, sDescrizione, sImage);
+                        palinsestoAll.addItem(allPalinsesto);
+                    }
                 }
 
                 return null;
@@ -221,8 +227,10 @@ public class ServiceListen extends Service {
                         if (allPalinsesto)                       {
                             if (palinsestoAll != null) palinsestoAll.ITEMS.clear();
 
-                            invokeWSPalinsesto(PARAM_PALINSESTO_ALL);
-                            allPalinsesto = false;
+                            if (BaseActivity.getIsConnection(oActivity)) {
+                                invokeWSPalinsesto(PARAM_PALINSESTO_ALL);
+                                allPalinsesto = false;
+                            }
                         }
 
                         Thread.sleep(timeSleep);

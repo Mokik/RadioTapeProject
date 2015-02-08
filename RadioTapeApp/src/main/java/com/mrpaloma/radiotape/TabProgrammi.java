@@ -13,13 +13,18 @@ import android.widget.ListView;
 public class TabProgrammi extends Fragment {
 
     private ListView olistView = null;
-    public ListView getListView(){return olistView; }
+    public ListView getListView(){ return olistView; }
+
+    private Boolean loadPalinsesto = false;
+    public void setLoadPalinsesto(Boolean load) {loadPalinsesto = load; }
+    public Boolean getLoadPalinsesto() {return loadPalinsesto; }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View oFragmentView = inflater.inflate(R.layout.tab_programmi, container, false);
 
         olistView = (ListView)oFragmentView.findViewById(R.id.listPalinsesto);
+        setLoadPalinsesto(true);
 
         return oFragmentView;
     }
@@ -27,6 +32,11 @@ public class TabProgrammi extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
 }

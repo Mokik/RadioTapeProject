@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_search_list"
     android:layout_width="fill_parent"
@@ -7,17 +8,65 @@
     android:orientation="vertical">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/lnGiorno"
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/Marg10">
+
+        <TextView
+            android:id="@+id/lnGiornoNome"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/SizeListGiorno"
+            android:textStyle="italic"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_margin="@dimen/Marg10"
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/lnTitoloProgramma"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="top"
             android:textColor="#000000"
             android:textSize="@dimen/SizeListTitoloProgramma"
+            android:textStyle="bold" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/lnTestoOre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/SizeListOraInizio"
+                android:text="@string/txtInizio"/>
+
+            <TextView
+                android:id="@+id/lnOraInizio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/SizeListOraInizio"
+                android:textStyle="italic" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/lnDescrizione"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/Marg10"
+            android:textSize="@dimen/SizeListDescrizione"
             android:textStyle="italic" />
 
     </LinearLayout>
