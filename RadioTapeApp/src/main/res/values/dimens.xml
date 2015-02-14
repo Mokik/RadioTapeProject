@@ -1,0 +1,27 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="SizeTextInfoApp">20dp</dimen>
+    <dimen name="Marg10">10dp</dimen>
+    <dimen name="Marg5">5dp</dimen>
+    <dimen name="Marg15">15dp</dimen>
+    <dimen name="Marg30">30dp</dimen>
+    <dimen name="Marg20">20dp</dimen>
+    <dimen name="Marg40">40dp</dimen>
+    <dimen name="Marg50">50dp</dimen>
+    <dimen name="Marg60">60dp</dimen>
+    <dimen name="Marg70">70dp</dimen>
+    <dimen name="SizePaddingLeftDraw">8dp</dimen>
+    <dimen name="SizeTextStateAscoltando">18dp</dimen>
+    <dimen name="SizeTextTitoloNow">25dp</dimen>
+    <dimen name="SizeTextDescrizioneNow">19dp</dimen>
+    <dimen name="SizeListTitoloProgramma">14dp</dimen>
+    <dimen name="SizeListOraInizio">10dp</dimen>
+    <dimen name="SizeListDescrizione">12dp</dimen>
+    <dimen name="SizeListGiorno">20dp</dimen>
+    <dimen name="SizeTextLoading">15dp</dimen>
+    <dimen name="SizeNotifiche">20dp</dimen>
+    <dimen name="SizeNotificheTesto">30dp</dimen>
+    <dimen name="SizeErrorConnection">20dp</dimen>
+</resources>

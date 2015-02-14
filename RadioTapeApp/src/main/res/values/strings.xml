@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name" translatable="false">RadioTape</string>
+    <string name="local_service_listen_started" translatable="false">Buffering...</string>
+    <string name="ServiceListen" translatable="false">ServiceListen</string>
+    <string name="title_ascolta">Ascolta</string>
+    <string name="title_scrivi">Scrivici</string>
+    <string name="title_info">Info</string>
+    <string name="title_palinsesto">Palinsesto</string>
+    <string name="title_activity_setting">Impostazioni</string>
+    <string name="action_settings">Impostazioni</string>
+    <string name="action_exits">Chiudi</string>
+    <string name="urlRadio" translatable="false">http://s25.myradiostream.com:5976/;</string>
+    <string name="lblMessage">Scrivi qui il tuo messaggio</string>
+    <string name="lblButtonInviaMessaggio">Invia</string>
+    <string name="txtInvioAvvenutoConSuccesso">Invio avvenuto con successo</string>
+    <string name="lblButtonPause" translatable="false">Pause</string>
+    <string name="lblButtonPlay" translatable="false">Play</string>
+    <string name="UrlWsService" translatable="false">http://www.mrpaloma.com/wsmrpaloma.asmx</string>
+    <string name="UrlWsServiceWebPage" translatable="false">http://www.mrpaloma.com/wswhereareyougoing.asmx</string>
+    <string name="txtStateAscoltando">State ascoltando</string>
+    <string name="txtInizio">Dalle</string>
+    <string name="notificheon">On</string>
+    <string name="notificheoff">Off</string>
+    <string name="lblNotifiche">Notifiche</string>
+    <string name="txtErroreInternoRiprovare" translatable="false">Error restart app</string>
+    <string name="tipo_app" translatable="false">RDIOTAPE</string>
+    <string name="txtErrorConnection" translatable="false">Error connection data...</string>
+    <string name="txtInfoApp">Benvenuti su RadioTape!&lt;br/>&lt;br/>Ma...cos\'è &lt;i>RADIOTAPE&lt;/i> ? È un contenitore di idee... esperienze... conoscenze... novità!&lt;br/>&lt;br/>Fatto di persone che hanno un\'idea, una visione: cambiare il modo di fare e vivere la radio, portando qualcosa di nuovo, di folle, svalvolato...&lt;br/>&lt;br/>Seguici su</string>
+
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="title_ascolta">Listen</string>
+    <string name="title_scrivi">Write to us</string>
+    <string name="title_info">Info</string>
+    <string name="title_palinsesto">Palimpsest</string>
+    <string name="title_activity_setting">Settings</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_exits">Exit</string>
+    <string name="lblMessage">Write here your message</string>
+    <string name="lblButtonInviaMessaggio">Send</string>
+    <string name="txtInvioAvvenutoConSuccesso">Sent successfully</string>
+    <string name="txtStateAscoltando">Now listening</string>
+    <string name="txtInizio">Start</string>
+    <string name="notificheon">On</string>
+    <string name="notificheoff">Off</string>
+    <string name="lblNotifiche">Notifications</string>
+    <string name="txtInfoApp">Benvenuti su RadioTape!&lt;br/>&lt;br/>Ma...cos\'è &lt;i>RADIOTAPE&lt;/i> ? È un contenitore di idee... esperienze... conoscenze... novità!&lt;br/>&lt;br/>Fatto di persone che hanno un\'idea, una visione: cambiare il modo di fare e vivere la radio, portando qualcosa di nuovo, di folle, svalvolato...&lt;br/>&lt;br/>Seguici su</string>
+
+</resources>
