@@ -27,14 +27,12 @@
             android:orientation="horizontal"
             android:gravity="center_horizontal">
 
-            <ToggleButton
-                android:id="@+id/btnNotifiche"
+            <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textOn="@string/notificheon"
-                android:textOff="@string/notificheoff"
-                android:textSize="@dimen/SizeNotifiche"
-                android:visibility="visible"/>
+                android:id="@+id/chkNotifiche"
+                android:layout_gravity="center_vertical"
+                android:clickable="true" />
 
         </LinearLayout>
 

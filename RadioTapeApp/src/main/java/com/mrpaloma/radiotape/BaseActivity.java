@@ -47,6 +47,7 @@ public class BaseActivity extends ActionBarActivity {
     public static final String EXTRA_MESSAGE = "message";
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
+    public static String PARAM_ANDROIDCODE = "AndroidCode";
 
     /**
      * Substitute you own sender ID here. This is the project number you got
@@ -54,12 +55,12 @@ public class BaseActivity extends ActionBarActivity {
      */
     String SENDER_ID = NumberSerialKey.SENDER_ID_CLOUD_MESSAGE;
 
-    GoogleCloudMessaging gcm;
-    AtomicInteger msgId = new AtomicInteger();
-    SharedPreferences prefs;
-    Context context = null;
-    String regid;
-    String sCodiceAndroid;
+    protected GoogleCloudMessaging gcm;
+    protected AtomicInteger msgId = new AtomicInteger();
+    protected SharedPreferences prefs;
+    protected Context context = null;
+    protected String regid;
+    protected String sCodiceAndroid;
 
     // controllo se ho la connessione dei dati
     public static Boolean getIsConnection(Activity oActivity) {
@@ -114,8 +115,7 @@ public class BaseActivity extends ActionBarActivity {
 
         // Avvio la nuova Activity
         Intent detailIntent = new Intent(this, SettingActivity.class);
-        //detailIntent.putExtra(PARAM_UNIQUECODE, "");
-        //detailIntent.putExtra(PARAM_ANDROIDCODE, sCodiceAndroid);
+        detailIntent.putExtra(PARAM_ANDROIDCODE, sCodiceAndroid);
 
         startActivity(detailIntent);
         finish();
@@ -317,6 +317,7 @@ public class BaseActivity extends ActionBarActivity {
         try {
             PackageInfo packageInfo = context.getPackageManager()
                     .getPackageInfo(context.getPackageName(), 0);
+
             return packageInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             // should never happen
