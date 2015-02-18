@@ -1,7 +1,5 @@
 package com.mrpaloma.radiotape;
 
-import android.app.Activity;
-import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -18,11 +16,10 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import org.ksoap2.serialization.PropertyInfo;
 import org.ksoap2.serialization.SoapObject;
-
-import java.io.IOException;
 
 /**
  * Created by MicheleMaccini on 04/02/2015.
@@ -34,35 +31,44 @@ public class ServiceListen extends Service {
     public static String NAME_MESSAGE_STOPSERVICE = "StopService";
     public static String NAME_MESSAGE_STARTSERVICE = "StartService";
     public static String NAME_MESSAGE_PLAYINGMUSIC = "PlayingMusic";
-
+    public static int ONGOING_NOTIFICATION_ID = 2;
+    public static String PARAM_PALINSESTO_NOW = "1";
+    public static String PARAM_PALINSESTO_ALL = "";
+    // This is the object that receives interactions from clients.  See
+    // RemoteService for a more complete example.
+    private final IBinder mBinder = new LocalBinder();
+    protected Palinsesto palinsestoToday = new Palinsesto();
+    protected PalinsestoAll palinsestoAll = new PalinsestoAll();
     // Unique Identification Number for the Notification.
     // We use it on Notification start, and to cancel it.
     private int NOTIFICATION = R.string.local_service_listen_started;
-    public static int ONGOING_NOTIFICATION_ID = 2;
-
     private ServiceHandler mServiceHandler;
     private Looper mServiceLooper;
     private NotificationManager mNM;
-
     private BaseActivity oActivity = null;
-    public void setActivityLaunch(BaseActivity activity) {oActivity = activity;}
-
     private Boolean loopWork = false;
-    public void setStopThread() {loopWork = false;}
+    private MediaPlayer player;
 
-    public static String PARAM_PALINSESTO_NOW = "1";
-    public static String PARAM_PALINSESTO_ALL = "";
+    public void setActivityLaunch(BaseActivity activity) {
+        oActivity = activity;
+    }
 
-    protected Palinsesto palinsestoToday = new Palinsesto();
-    public Palinsesto getPalinsestoToday() {return palinsestoToday;}
+    public void setStopThread() {
+        loopWork = false;
+    }
 
-    protected PalinsestoAll palinsestoAll = new PalinsestoAll();
-    public PalinsestoAll getPalinsestoAll() {return palinsestoAll;}
+    public Palinsesto getPalinsestoToday() {
+        return palinsestoToday;
+    }
 
-    public void invokeWSPalinsesto(String sParam){
+    public PalinsestoAll getPalinsestoAll() {
+        return palinsestoAll;
+    }
+
+    public void invokeWSPalinsesto(String sParam) {
         final String sParamWs = sParam;
 
-        AsyncTask<Void, Void, Void> mSendEmailTask  = new AsyncTask<Void, Void, Void>() {
+        AsyncTask<Void, Void, Void> mSendEmailTask = new AsyncTask<Void, Void, Void>() {
 
             @Override
             protected Void doInBackground(Void... arg0) {
@@ -76,7 +82,7 @@ public class ServiceListen extends Service {
                 SoapObject response = UtilsFunction.CallWebService(oActivity, "GetPalinsesto", piParam);
                 SoapObject resultWs = (SoapObject) response.getProperty(1);
 
-                for(int i=0; i<resultWs.getPropertyCount(); i++) {
+                for (int i = 0; i < resultWs.getPropertyCount(); i++) {
                     SoapObject giorno = (SoapObject) resultWs.getProperty(i);
 
                     int iOrdinamento = i;
@@ -89,7 +95,7 @@ public class ServiceListen extends Service {
 
                     String sImage = giorno.getPropertyAsString(4).toString();
 
-                    if (sParamWs.equals(PARAM_PALINSESTO_NOW)){
+                    if (sParamWs.equals(PARAM_PALINSESTO_NOW)) {
                         Palinsesto.Giorno toDayPalinsesto = new Palinsesto.Giorno(iOrdinamento, sGiorno, sOraInizio, sTitolo, sDescrizione, sImage);
                         palinsestoToday.addItem(toDayPalinsesto);
                     }
@@ -104,25 +110,11 @@ public class ServiceListen extends Service {
             }
 
             @Override
-            protected void onPostExecute(Void result) {}
+            protected void onPostExecute(Void result) {
+            }
 
         }.execute(null, null, null);
     }
-
-    /**
-     * Class for clients to access.  Because we know this service always
-     * runs in the same process as its clients, we don't need to deal with
-     * IPC.
-     */
-    public class LocalBinder extends Binder {
-        ServiceListen getService() {
-            return ServiceListen.this;
-        }
-    }
-
-    // This is the object that receives interactions from clients.  See
-    // RemoteService for a more complete example.
-    private final IBinder mBinder = new LocalBinder();
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -131,7 +123,7 @@ public class ServiceListen extends Service {
 
     @Override
     public void onCreate() {
-        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         // Start up the thread running the service.  Note that we create a
         // separate thread because the service normally runs in the process's
@@ -171,7 +163,7 @@ public class ServiceListen extends Service {
             if (player == null) initializeMediaPlayer();
 
             // avvio player
-            if ((player!=null) && (!player.isPlaying())) startPlaying();
+            if ((player != null) && (!player.isPlaying())) startPlaying();
 
         } catch (Exception e) {
             EasyTrackerCustom.AddException(null, e, EasyTrackerCustom.TRACK_SERVICELISTEN);
@@ -179,80 +171,6 @@ public class ServiceListen extends Service {
         }
 
         return Service.START_NOT_STICKY;
-    }
-
-    // Handler that receives messages from the thread
-    private final class ServiceHandler extends Handler {
-        public ServiceHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            Log.d(MainActivity.CODE_LOG, "Avviato loop");
-
-            synchronized (this) {
-                loopWork = true;
-
-                try {
-
-                    // invio messaggio per indicare che il servizio è partito
-                    SendMessageStartService();
-
-                    int timeSleep = 3000;
-                    int callWsPalinsesto = 0;
-                    boolean allPalinsesto = true;
-
-                    // controllo se ho tutti i parametri valorizzati
-                    try { while ((oActivity == null)) { Thread.sleep(100); } } catch (Exception e) { Log.d(MainActivity.CODE_LOG, "Listen wait param service " + e.getMessage()); }
-
-                    // cycle
-                    while (loopWork) {
-                        SendMessagePlayingMusic();
-
-                        // controllo se devo chiamare il palinsesto
-                        if ((callWsPalinsesto == 0) && (oActivity != null)) {
-                            if (BaseActivity.getIsConnection(oActivity)) {
-                                if (palinsestoToday != null) palinsestoToday.ITEMS.clear();
-                                invokeWSPalinsesto(PARAM_PALINSESTO_NOW);
-                            }
-                            callWsPalinsesto++;
-
-                        } else {
-                            callWsPalinsesto++;
-                            if (callWsPalinsesto > 10) callWsPalinsesto = 0;
-                        }
-
-                        // controllo tutto il palinsesto
-                        if (allPalinsesto)                       {
-                            if (palinsestoAll != null) palinsestoAll.ITEMS.clear();
-
-                            if (BaseActivity.getIsConnection(oActivity)) {
-                                invokeWSPalinsesto(PARAM_PALINSESTO_ALL);
-                                allPalinsesto = false;
-                            }
-                        }
-
-                        Thread.sleep(timeSleep);
-                    }
-
-                    stopPlaying();
-
-                } catch (Exception e) {
-                    EasyTrackerCustom.AddException(oActivity, e, EasyTrackerCustom.TRACK_ACTION_LOOPSERVICELISTEN);
-
-                    Log.d(MainActivity.CODE_LOG, "Listen service " + e.getMessage());
-
-                } finally {
-
-                    // invio messaggio per indicare che il servizio ha finito
-                    SendMessageStopService();
-
-                }
-            }
-
-            Log.d(MainActivity.CODE_LOG, "Terminato loop");
-        }
     }
 
     protected void SendMessageStopService() {
@@ -296,12 +214,28 @@ public class ServiceListen extends Service {
         // Set the icon, scrolling text and timestamp
         Notification notification = new Notification(R.drawable.ic_launcher, text, System.currentTimeMillis());
 
+        RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.notification_custom);
+        //contentView.setImageViewResource(R.id.notification_image, R.drawable.notification_image);
+        contentView.setTextViewText(R.id.notification_title, getText(R.string.app_name));
+        contentView.setTextViewText(R.id.notification_text, text);
+        notification.contentView = contentView;
+
         // The PendingIntent to launch our activity if the user selects this notification
         Intent intent = new Intent(this, MainActivity.class);
+        //intent.putExtra(NAME_MESSAGE_STOPSERVICE, false);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
+        Intent intentStop = new Intent(this, MainActivity.class);
+        intentStop.putExtra(NAME_MESSAGE_STOPSERVICE, true);
+        //intentStop.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent contentIntentStop = PendingIntent.getActivity(this, 1, intentStop, 0);
+
         // Set the info for the views that show in the notification panel.
-        notification.setLatestEventInfo(this, getText(R.string.app_name), text, contentIntent);
+        //notification.setLatestEventInfo(this, getText(R.string.app_name), text, contentIntent);
+        notification.contentIntent = contentIntent;
+
+        contentView.setOnClickPendingIntent(R.id.btnCloseNotification, contentIntentStop);
 
         // Send the notification.
         //mNM.notify(NOTIFICATION, notification);
@@ -333,7 +267,6 @@ public class ServiceListen extends Service {
         startForeground(ONGOING_NOTIFICATION_ID, notification);
     }
 
-    private MediaPlayer player;
     private void initializeMediaPlayer() {
 
         try {
@@ -378,6 +311,105 @@ public class ServiceListen extends Service {
             if (player.isPlaying()) {
                 player.stop();
             }
+        }
+    }
+
+    /**
+     * Class for clients to access.  Because we know this service always
+     * runs in the same process as its clients, we don't need to deal with
+     * IPC.
+     */
+    public class LocalBinder extends Binder {
+        ServiceListen getService() {
+            return ServiceListen.this;
+        }
+    }
+
+    // Handler that receives messages from the thread
+    private final class ServiceHandler extends Handler {
+        public ServiceHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            Log.d(MainActivity.CODE_LOG, "Avviato loop");
+
+            synchronized (this) {
+                loopWork = true;
+
+                try {
+
+                    // controllo se ho tutti i parametri valorizzati
+                    try {
+                        while ((oActivity == null)) {
+                            Thread.sleep(100);
+                        }
+                    } catch (Exception e) {
+                        Log.d(MainActivity.CODE_LOG, "Listen wait param service " + e.getMessage());
+                    }
+
+                    if (!oActivity.getStopListenNotification()) {
+
+                        // invio messaggio per indicare che il servizio è partito
+                        SendMessageStartService();
+
+                        int timeSleep = 3000;
+                        int callWsPalinsesto = 0;
+                        boolean allPalinsesto = true;
+
+                        // cycle
+                        while (loopWork) {
+                            SendMessagePlayingMusic();
+
+                            // controllo se devo chiamare il palinsesto
+                            if ((callWsPalinsesto == 0) && (oActivity != null)) {
+                                if (BaseActivity.getIsConnection(oActivity)) {
+                                    if (palinsestoToday != null) palinsestoToday.ITEMS.clear();
+                                    invokeWSPalinsesto(PARAM_PALINSESTO_NOW);
+                                }
+                                callWsPalinsesto++;
+
+                            } else {
+                                callWsPalinsesto++;
+                                if (callWsPalinsesto > 10) callWsPalinsesto = 0;
+                            }
+
+                            // controllo tutto il palinsesto
+                            if (allPalinsesto) {
+                                if (palinsestoAll != null) palinsestoAll.ITEMS.clear();
+
+                                if (BaseActivity.getIsConnection(oActivity)) {
+                                    invokeWSPalinsesto(PARAM_PALINSESTO_ALL);
+                                    allPalinsesto = false;
+                                }
+                            }
+
+                            Thread.sleep(timeSleep);
+                        }
+                    }
+
+                    palinsestoToday.ITEMS.clear();
+                    palinsestoToday.ITEM_MAP.clear();
+                    palinsestoAll.ITEMS.clear();
+                    palinsestoAll.ITEM_MAP.clear();
+
+                    stopPlaying();
+
+                } catch (Exception e) {
+                    EasyTrackerCustom.AddException(oActivity, e, EasyTrackerCustom.TRACK_ACTION_LOOPSERVICELISTEN);
+
+                    Log.d(MainActivity.CODE_LOG, "Listen service " + e.getMessage());
+
+                } finally {
+
+                    // invio messaggio per indicare che il servizio ha finito
+                    SendMessageStopService();
+
+                }
+            }
+
+            Log.d(MainActivity.CODE_LOG, "Terminato loop");
         }
     }
 

@@ -11,7 +11,7 @@
     <string name="title_activity_setting">Impostazioni</string>
     <string name="action_settings">Impostazioni</string>
     <string name="action_exits">Chiudi</string>
-    <string name="urlRadio" translatable="false">http://s25.myradiostream.com:5976/;</string>
+    <string name="urlRadio" translatable="false">http://nr2.newradio.it:8020/stream.mp3</string>
     <string name="lblMessage">Scrivi qui il tuo messaggio</string>
     <string name="lblButtonInviaMessaggio">Invia</string>
     <string name="txtInvioAvvenutoConSuccesso">Invio avvenuto con successo</string>

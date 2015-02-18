@@ -1,33 +1,30 @@
 package com.mrpaloma.radiotape;
 
-import java.util.ArrayList;
-import java.util.Locale;
-
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 
 public class MainActivity extends BaseActivity implements ActionBar.TabListener {
@@ -47,7 +44,6 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
      */
     ViewPager mViewPager;
 
-    Boolean updatePalinsestoAll = true;
     int indexSleepButton = 1;
 
     @Override
@@ -56,8 +52,24 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
         setContentView(R.layout.activity_main);
 
         try {
+            //stopListenNotification = false;
             oActivity = this;
             context = this.getBaseContext();
+
+            boolean alreadyStop = getStopNotification(context);
+            Bundle p = getIntent().getExtras();
+            if ((p != null) && (!alreadyStop)) {
+                boolean bStopListen = p.getBoolean(ServiceListen.NAME_MESSAGE_STOPSERVICE, false);
+                stopListenNotification = bStopListen;
+
+                //getIntent().removeExtra(ServiceListen.NAME_MESSAGE_STOPSERVICE);
+            }
+            setStopNotification(context, stopListenNotification);
+
+            /*if (savedInstanceState != null) {
+                boolean bStopListen= (boolean) savedInstanceState.getSerializable(ServiceListen.NAME_MESSAGE_STOPSERVICE);
+                if (bStopListen) CloseApp();
+            }*/
 
             // controllo la connessione dati
             Boolean isConnection = checkConnection(this);
@@ -130,6 +142,21 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
         }
     }
 
+    /*@Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        // getIntent() should always return the most recent
+
+        Bundle p = getIntent().getExtras();
+        if (p != null) {
+            boolean bStopListen =  p.getBoolean(ServiceListen.NAME_MESSAGE_STOPSERVICE, false);
+            if (bStopListen) CloseApp();
+
+        }
+
+        setIntent(intent);
+    }*/
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -150,10 +177,7 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
             return true;
 
         } else if (id == R.id.action_exit) {
-            StopListen();
-
-            finish();
-            moveTaskToBack(true);
+            CloseApp();
         }
 
         return super.onOptionsItemSelected(item);
@@ -189,97 +213,145 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 
         try {
 
-            // controllo se presente la connessione dati
-            if ((oActivity != null) && (mSectionsPagerAdapter != null)) {
-                Fragment tbListien = mSectionsPagerAdapter.getItem(0);
-                if (tbListien != null) {
-                    View v = ((TabListen)tbListien).getFragmentView();
-                    if (v != null) {
-                        LinearLayout lytErrorConnection =(LinearLayout)v.findViewById(R.id.lytErrorConnection);
-                        lytErrorConnection.setVisibility(View.GONE);
+            // controllo se devo fermare l'applicazione (richiesta fatta dalla notifica del servizio)
+            if (stopListenNotification) {
 
-                        Boolean con = getIsConnection(oActivity);
-                        if (!con) lytErrorConnection.setVisibility(View.VISIBLE);
+
+            } else {
+
+                // controllo se presente la connessione dati
+                if ((oActivity != null) && (mSectionsPagerAdapter != null)) {
+                    Fragment tbListien = mSectionsPagerAdapter.getItem(0);
+                    if (tbListien != null) {
+                        View v = ((TabListen) tbListien).getFragmentView();
+                        if (v != null) {
+                            LinearLayout lytErrorConnection = (LinearLayout) v.findViewById(R.id.lytErrorConnection);
+                            lytErrorConnection.setVisibility(View.GONE);
+
+                            Boolean con = getIsConnection(oActivity);
+                            if (!con) lytErrorConnection.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
-            }
 
-            // controllo se devo aggiornare il palinsesto
-            if (srvListen != null) {
-                Palinsesto ptd = srvListen.getPalinsestoToday();
-                if ((ptd != null) && (ptd.ITEMS.size() > 0)) {
-                    Palinsesto.Giorno g = ptd.ITEMS.get(0);
-                    if ((g != null) && (oActivity != null) && (mSectionsPagerAdapter != null)) {
+                // controllo se devo aggiornare il palinsesto
+                if (srvListen != null) {
+                    Palinsesto ptd = srvListen.getPalinsestoToday();
+                    if ((ptd != null) && (ptd.ITEMS.size() > 0)) {
+                        Palinsesto.Giorno g = ptd.ITEMS.get(0);
+                        if ((g != null) && (oActivity != null) && (mSectionsPagerAdapter != null)) {
+                            Fragment tbListien = mSectionsPagerAdapter.getItem(0);
+                            if (tbListien != null) {
+                                View v = ((TabListen) tbListien).getFragmentView();
+                                if (v != null) {
+                                    TextView txtTitolo = (TextView) v.findViewById(R.id.txtTitoloNow);
+                                    if (txtTitolo != null) txtTitolo.setText(g.getTitolo());
+
+                                    TextView txtDescrizione = (TextView) v.findViewById(R.id.txtDescrizioneNow);
+                                    if (txtDescrizione != null)
+                                        txtDescrizione.setText(g.getDescrizione());
+
+                                    //ImageView imgProgramma =(ImageView)v.findViewById(R.id.iconPalinsesto);
+                                    //if (txtDescrizione != null) imgProgramma.setImageUrl(g.getImage());
+                                }
+                            }
+                        }
+                    }
+
+                    // controllo se sto visualizzando i pulsanti corretti
+                    if ((mSectionsPagerAdapter != null) && (indexSleepButton == 20)) {
                         Fragment tbListien = mSectionsPagerAdapter.getItem(0);
                         if (tbListien != null) {
-                            View v = ((TabListen)tbListien).getFragmentView();
-                            if (v != null) {
-                                TextView txtTitolo =(TextView)v.findViewById(R.id.txtTitoloNow);
-                                if (txtTitolo != null) txtTitolo.setText(g.getTitolo());
+                            Button btnPlay = ((TabListen) tbListien).getBtnPlay();
+                            Button btnPause = ((TabListen) tbListien).getBtnPause();
 
-                                TextView txtDescrizione =(TextView)v.findViewById(R.id.txtDescrizioneNow);
-                                if (txtDescrizione != null) txtDescrizione.setText(g.getDescrizione());
+                            if (playingMusic) {
+                                btnPlay.setVisibility(View.GONE);
+                                btnPause.setVisibility(View.VISIBLE);
+                            }
+                            if (!playingMusic) {
+                                btnPlay.setVisibility(View.VISIBLE);
+                                btnPause.setVisibility(View.GONE);
+                            }
+                        }
+                    } else {
+                        if (indexSleepButton > 40) indexSleepButton = 0;
+                    }
+                    indexSleepButton++;
 
-                                //ImageView imgProgramma =(ImageView)v.findViewById(R.id.iconPalinsesto);
-                                //if (txtDescrizione != null) imgProgramma.setImageUrl(g.getImage());
+                    // palinsesto completo
+                    PalinsestoAll pta = srvListen.getPalinsestoAll();
+                    if ((pta != null) && (pta.ITEMS.size() > 0)) {
+                        Fragment tbProgram = mSectionsPagerAdapter.getItem(1);
+                        if (tbProgram != null) {
+                            ListView lv = ((TabProgrammi) tbProgram).getListView();
+
+                            TextView loading = (TextView) lv.findViewById(R.id.txtLoading);
+                            if (loading != null) loading.setVisibility(View.GONE);
+
+                            ListView list = (ListView) lv.findViewById(R.id.listPalinsesto);
+                            if (list != null) list.setVisibility(View.VISIBLE);
+
+                            if ((lv != null) && (!updatePalinsestoAll) && (((TabProgrammi) tbProgram).getLoadPalinsesto())) {
+                                updatePalinsestoAll = true;
+                                ((TabProgrammi) tbProgram).setLoadPalinsesto(false);
+                            }
+
+                            if ((lv != null) && (updatePalinsestoAll)) {
+                                PalinsestoAdapter adapter = new PalinsestoAdapter(oActivity.getBaseContext(), R.layout.item_giornopalinsesto, pta.ITEMS);
+                                adapter.setActivity(oActivity);
+
+                                lv.setAdapter(adapter);
+
+                                updatePalinsestoAll = false;
                             }
                         }
                     }
                 }
 
-                // controllo se sto visualizzando i pulsanti corretti
-                if ((mSectionsPagerAdapter != null) && (indexSleepButton == 20)) {
-                    Fragment tbListien = mSectionsPagerAdapter.getItem(0);
-                    if (tbListien != null) {
-                        Button btnPlay = ((TabListen)tbListien).getBtnPlay();
-                        Button btnPause = ((TabListen)tbListien).getBtnPause();
-
-                        if (playingMusic) {
-                            btnPlay.setVisibility(View.GONE);
-                            btnPause.setVisibility(View.VISIBLE);
-                        }
-                        if (!playingMusic) {
-                            btnPlay.setVisibility(View.VISIBLE);
-                            btnPause.setVisibility(View.GONE);
-                        }
-                    }
-                } else {
-                    if (indexSleepButton > 40) indexSleepButton = 0;
-                }
-                indexSleepButton++;
-
-                // palinsesto completo
-                PalinsestoAll pta = srvListen.getPalinsestoAll();
-                if ((pta != null) && (pta.ITEMS.size() > 0)) {
-                    Fragment tbProgram = mSectionsPagerAdapter.getItem(1);
-                    if (tbProgram != null) {
-                        ListView lv = ((TabProgrammi)tbProgram).getListView();
-
-                        TextView loading = (TextView)lv.findViewById(R.id.txtLoading);
-                        if (loading != null) loading.setVisibility(View.GONE);
-
-                        ListView list = (ListView)lv.findViewById(R.id.listPalinsesto);
-                        if (list != null) list.setVisibility(View.VISIBLE);
-
-                        if ((lv != null) && (!updatePalinsestoAll) && (((TabProgrammi)tbProgram).getLoadPalinsesto())) {
-                            updatePalinsestoAll = true;
-                            ((TabProgrammi)tbProgram).setLoadPalinsesto(false);
-                        }
-
-                        if ((lv != null) && (updatePalinsestoAll)) {
-                            PalinsestoAdapter adapter = new PalinsestoAdapter(oActivity.getBaseContext(), R.layout.item_giornopalinsesto, pta.ITEMS);
-                            adapter.setActivity(oActivity);
-
-                            lv.setAdapter(adapter);
-
-                            updatePalinsestoAll = false;
-                        }
-                    }
-                }
             }
 
-        }  catch (Exception ex) { EasyTrackerCustom.AddException(oActivity, ex, "MainActivity - updateControl"); }
+        } catch (Exception ex) {
+            EasyTrackerCustom.AddException(oActivity, ex, "MainActivity - updateControl");
+        }
 
+    }
+
+    /**
+     * A placeholder fragment containing a simple view.
+     */
+    public static class PlaceholderFragment extends Fragment {
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        public PlaceholderFragment() {
+        }
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static PlaceholderFragment newInstance(int sectionNumber) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+
+            return fragment;
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+
+            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+            return rootView;
+        }
     }
 
     /**
@@ -289,12 +361,15 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private ArrayList<Fragment> mFragmentsList;
-        public ArrayList<Fragment> getFragmentsList() {return mFragmentsList; }
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
 
             createListFragment();
+        }
+
+        public ArrayList<Fragment> getFragmentsList() {
+            return mFragmentsList;
         }
 
         protected void createListFragment() {
@@ -325,7 +400,7 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
         public CharSequence getPageTitle(int position) {
             Locale l = Locale.getDefault();
 
-            Fragment fragment = (Fragment)mFragmentsList.get(position);
+            Fragment fragment = (Fragment) mFragmentsList.get(position);
 
             if (fragment instanceof TabListen) {
                 return getString(R.string.title_ascolta).toUpperCase(l);
@@ -338,43 +413,6 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
             }
 
             return null;
-        }
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-            return rootView;
         }
     }
 

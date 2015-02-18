@@ -16,16 +16,11 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-import org.ksoap2.serialization.PropertyInfo;
-import org.ksoap2.serialization.SoapObject;
-
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -33,39 +28,98 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class BaseActivity extends ActionBarActivity {
 
-    public static String CODE_LOG = "RadioTape";
-
-    private Handler updateHandler = new Handler();
-    protected ServiceListen srvListen = null;
-    private boolean bindedListening = false;
-    protected Activity oActivity = null;
-    Intent serviceIntentListen = null;
-
-    protected Boolean playingMusic = false;
-
-    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     public static final String EXTRA_MESSAGE = "message";
     public static final String PROPERTY_REG_ID = "registration_id";
+    private static final String PROPERTY_STOP_NOTIFICATION = "stopNotification";
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String PROPERTY_APP_VERSION = "appVersion";
+    public static String CODE_LOG = "RadioTape";
     public static String PARAM_ANDROIDCODE = "AndroidCode";
+    protected ServiceListen srvListen = null;
+    private ServiceConnection mConnection = new ServiceConnection() {
 
-    /**
-     * Substitute you own sender ID here. This is the project number you got
-     * from the API Console, as described in "Getting Started."
-     */
-    String SENDER_ID = NumberSerialKey.SENDER_ID_CLOUD_MESSAGE;
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder binder) {
+            // TODO Auto-generated method stub
 
+            Log.d(MainActivity.CODE_LOG, "Connected service listen");
+
+            srvListen = ((ServiceListen.LocalBinder) binder).getService();
+            if (srvListen != null) {
+                srvListen.setActivityLaunch(BaseActivity.this);
+            }
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName className) {
+            // TODO Auto-generated method stub
+            // (viene invocato solo se crash il servizio o distrutto)
+
+            Log.d(MainActivity.CODE_LOG, "Disconnected service listen");
+        }
+
+    };
+    protected Activity oActivity = null;
+    protected boolean playingMusic = false;
+    // serve per ricevere i messaggi che mi arrivano dal service
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                Boolean stopService = intent.getBooleanExtra(ServiceListen.NAME_MESSAGE_STOPSERVICE, false);
+                Boolean startService = intent.getBooleanExtra(ServiceListen.NAME_MESSAGE_STARTSERVICE, false);
+                playingMusic = intent.getBooleanExtra(ServiceListen.NAME_MESSAGE_PLAYINGMUSIC, false);
+
+            } catch (Exception e) {
+                EasyTrackerCustom.AddException((BaseActivity) context, e, "ricezione messagio servicelisten");
+
+            }
+        }
+    };
+    protected boolean stopListenNotification = false;
+    private Runnable updateTimerThread = new Runnable() {
+        public void run() {
+            if (!stopListenNotification) {
+                updateControl(); // override
+
+                updateHandler.postDelayed(this, 900);
+
+            } else {
+                CloseApp();
+            }
+        }
+    };
+    protected boolean updatePalinsestoAll = true;
     protected GoogleCloudMessaging gcm;
     protected AtomicInteger msgId = new AtomicInteger();
     protected SharedPreferences prefs;
     protected Context context = null;
     protected String regid;
     protected String sCodiceAndroid;
+    Intent serviceIntentListen = null;
+    /**
+     * Substitute you own sender ID here. This is the project number you got
+     * from the API Console, as described in "Getting Started."
+     */
+    String SENDER_ID = NumberSerialKey.SENDER_ID_CLOUD_MESSAGE;
+    private Handler updateHandler = new Handler();
+    private boolean bindedListening = false;
+    /**
+     * Registers the application with GCM servers asynchronously.
+     * <p/>
+     * Stores the registration ID and app versionCode in the application's
+     * shared preferences.
+     */
+
+    private AsyncTask<Void, Void, Void> mRegisterAppTask;
 
     // controllo se ho la connessione dei dati
     public static Boolean getIsConnection(Activity oActivity) {
         return checkConnection(oActivity);
     }
+
     protected static Boolean checkConnection(Activity oActivity) {
         Boolean isInternetPresent = false;
 
@@ -87,8 +141,29 @@ public class BaseActivity extends ActionBarActivity {
         return isInternetPresent;
     }
 
+    /**
+     * @return Application's version code from the {@code PackageManager}.
+     */
+    protected static int getAppVersion(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+
+            return packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            // should never happen
+            throw new RuntimeException("Could not get package name: " + e);
+        }
+    }
+
+    public boolean getStopListenNotification() {
+        return stopListenNotification;
+    }
+
     public void StopListen() {
-        if (srvListen != null) { srvListen.setStopThread(); }
+        if (srvListen != null) {
+            srvListen.setStopThread();
+        }
 
         StopListenService();
 
@@ -109,7 +184,8 @@ public class BaseActivity extends ActionBarActivity {
         }
     }
 
-    protected void updateControl() {}
+    protected void updateControl() {
+    }
 
     protected void StartActivitySetting() {
 
@@ -120,6 +196,15 @@ public class BaseActivity extends ActionBarActivity {
         startActivity(detailIntent);
         finish();
 
+    }
+
+    public void CloseApp() {
+        //if (updateHandler != null) updateHandler.removeCallbacks(updateTimerThread);
+
+        StopListen();
+
+        finish();
+        moveTaskToBack(true);
     }
 
     @Override
@@ -146,22 +231,17 @@ public class BaseActivity extends ActionBarActivity {
 
     @Override
     protected void onPause() {
-        try { super.onPause(); }
-        catch(Exception ex) { EasyTrackerCustom.AddException(this, ex, "MainActivity - onPause"); }
+        try {
+            super.onPause();
+        } catch (Exception ex) {
+            EasyTrackerCustom.AddException(this, ex, "MainActivity - onPause");
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
     }
-
-    private Runnable updateTimerThread = new Runnable() {
-        public void run() {
-            updateControl(); // override
-
-            updateHandler.postDelayed(this, 900);
-        }
-    };
 
     public void StartListenService() {
         // avvio il servizio
@@ -198,6 +278,7 @@ public class BaseActivity extends ActionBarActivity {
 
         }
     }
+
     protected void disconnectServiceListening() {
         try {
             if (bindedListening) if (mConnection != null) unbindService(mConnection);
@@ -211,47 +292,19 @@ public class BaseActivity extends ActionBarActivity {
         }
     }
 
-    // serve per ricevere i messaggi che mi arrivano dal service
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+    // serve per sapere quando applicazione chiusa dalle notifiche
+    protected void setStopNotification(Context context, boolean stop) {
+        final SharedPreferences prefs = getGCMPreferences(context);
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            try {
-                Boolean stopService = intent.getBooleanExtra(ServiceListen.NAME_MESSAGE_STOPSERVICE, false);
-                Boolean startService = intent.getBooleanExtra(ServiceListen.NAME_MESSAGE_STARTSERVICE, false);
-                playingMusic = intent.getBooleanExtra(ServiceListen.NAME_MESSAGE_PLAYINGMUSIC, false);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(PROPERTY_STOP_NOTIFICATION, stop);
+        editor.commit();
+    }
 
-            } catch (Exception e) {
-                EasyTrackerCustom.AddException((BaseActivity)context, e, "ricezione messagio servicelisten");
-
-            }
-        }
-    };
-
-    private ServiceConnection mConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder binder) {
-            // TODO Auto-generated method stub
-
-            Log.d(MainActivity.CODE_LOG, "Connected service listen");
-
-            srvListen = ((ServiceListen.LocalBinder) binder).getService();
-            if (srvListen != null) {
-                srvListen.setActivityLaunch(BaseActivity.this);
-            }
-
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName className) {
-            // TODO Auto-generated method stub
-            // (viene invocato solo se crash il servizio o distrutto)
-
-            Log.d(MainActivity.CODE_LOG, "Disconnected service listen");
-        }
-
-    };
+    protected boolean getStopNotification(Context context) {
+        final SharedPreferences prefs = getGCMPreferences(context);
+        return prefs.getBoolean(PROPERTY_STOP_NOTIFICATION, false);
+    }
 
     /**
      * Check the device to make sure it has the Google Play Services APK. If
@@ -275,11 +328,11 @@ public class BaseActivity extends ActionBarActivity {
 
     /**
      * Gets the current registration ID for application on GCM service.
-     * <p>
+     * <p/>
      * If result is empty, the app needs to register.
      *
      * @return registration ID, or empty string if there is no existing
-     *         registration ID.
+     * registration ID.
      */
     protected String getRegistrationId(Context context) {
         final SharedPreferences prefs = getGCMPreferences(context);
@@ -310,29 +363,6 @@ public class BaseActivity extends ActionBarActivity {
                 Context.MODE_PRIVATE);
     }
 
-    /**
-     * @return Application's version code from the {@code PackageManager}.
-     */
-    protected static int getAppVersion(Context context) {
-        try {
-            PackageInfo packageInfo = context.getPackageManager()
-                    .getPackageInfo(context.getPackageName(), 0);
-
-            return packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            // should never happen
-            throw new RuntimeException("Could not get package name: " + e);
-        }
-    }
-
-    /**
-     * Registers the application with GCM servers asynchronously.
-     * <p>
-     * Stores the registration ID and app versionCode in the application's
-     * shared preferences.
-     */
-
-    private AsyncTask<Void, Void, Void> mRegisterAppTask;
     protected void registerInBackground() {
         final long start = System.currentTimeMillis();
 
@@ -404,7 +434,7 @@ public class BaseActivity extends ActionBarActivity {
      * {@code SharedPreferences}.
      *
      * @param context application's context.
-     * @param regId registration ID
+     * @param regId   registration ID
      */
     private void storeRegistrationId(Context context, String regId) {
         final SharedPreferences prefs = getGCMPreferences(context);
