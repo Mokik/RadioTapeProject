@@ -46,7 +46,11 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
     ViewPager mViewPager;
 
     int indexSleepButton = 1;
-    String lastImageLoad = "";
+
+    private String lastImageLoad = "";
+    protected void resetLastImageLoad() { lastImageLoad = ""; }
+
+    private String lastTitle = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,6 +193,8 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         // When the given tab is selected, switch to the corresponding page in
         // the ViewPager.
+
+       if (tab.getPosition() == 0) resetLastImageLoad();
         mViewPager.setCurrentItem(tab.getPosition());
     }
 
@@ -253,11 +259,27 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
                                     if (txtDescrizione != null)
                                         txtDescrizione.setText(g.getDescrizione());
 
+                                    TextView txtInizio = (TextView) v.findViewById(R.id.txtInizioOre);
+                                    if (txtInizio != null) {
+                                        txtInizio.setText(getString(R.string.txtInizioOre) + g.getOraInizio().substring(0, 5));
+                                    }
+
                                     ImageView imgProgramma =(ImageView)v.findViewById(R.id.iconProgramma);
                                     String image = g.getImage();
-                                    if ((imgProgramma != null) && (!image.equals("")) && (image != null) && (!lastImageLoad.equals(image))) {
+                                    if ((image.toLowerCase().indexOf("anytype") < 0) && (imgProgramma != null) && (!image.equals("")) && (image != null) && (!lastImageLoad.equals(image))) {
                                         new ImageLoadTask(image, imgProgramma).execute();
                                         lastImageLoad = image;}
+
+                                    TextView txtBranoInOnda = (TextView) v.findViewById(R.id.txtBranoInOnda);
+                                    if (txtBranoInOnda != null) {
+                                        txtBranoInOnda.setText(srvListen.getStreamTitle());
+                                    }
+
+                                    // aggiorno il titolo notification
+                                    if (!lastTitle.equals(g.getTitolo())) {
+                                        srvListen.showNotification(g.getTitolo());
+                                        lastTitle = g.getTitolo();
+                                    }
                                 }
                             }
                         }

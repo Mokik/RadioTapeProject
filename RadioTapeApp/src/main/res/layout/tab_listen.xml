@@ -24,64 +24,30 @@
 
     <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/Marg20">
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/Marg20"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/lblButtonPause"
-                    android:id="@+id/btnPause"
-                    android:drawableLeft="@android:drawable/ic_media_pause"
-                    android:layout_gravity="center_horizontal" />
-
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/lblButtonPlay"
-                    android:id="@+id/btnPlay"
-                    android:drawableLeft="@android:drawable/ic_media_play"
-                    android:layout_gravity="center_horizontal"
-                    android:visibility="gone"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/Marg40"
                 android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/txtStateAscoltando"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/SizeTextStateAscoltando"
-                    android:text="@string/txtStateAscoltando"
-                    android:visibility="gone"></TextView>
 
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/Marg30"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:orientation="vertical"
+                    android:gravity="center">
 
                     <ImageView
                         android:id="@+id/iconProgramma"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/Marg20"
+                        android:layout_marginBottom="@dimen/Marg10"
                         android:src="@drawable/ic_launcher"></ImageView>
 
                     <TextView
@@ -91,6 +57,61 @@
                         android:textSize="@dimen/SizeTextTitoloNow"
                         android:textStyle="bold|italic"
                         android:text="loading..."></TextView>
+
+                    <TextView
+                        android:id="@+id/txtInizioOre"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/SizeTextInizioOre"
+                        android:text="loading..."></TextView>
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/Marg20"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/lblBranoInOnda"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/SizeTextBranoInOnda"
+                            android:text="@string/txtBranoInOnda"></TextView>
+
+                        <TextView
+                            android:id="@+id/txtBranoInOnda"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="italic"
+                            android:textSize="@dimen/SizeTextBranoInOnda"
+                            android:text="loading..."></TextView>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/Marg30"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lblButtonPause"
+                        android:id="@+id/btnPause"
+                        android:drawableLeft="@android:drawable/ic_media_pause"
+                        android:layout_gravity="center_horizontal" />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lblButtonPlay"
+                        android:id="@+id/btnPlay"
+                        android:drawableLeft="@android:drawable/ic_media_play"
+                        android:layout_gravity="center_horizontal"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 

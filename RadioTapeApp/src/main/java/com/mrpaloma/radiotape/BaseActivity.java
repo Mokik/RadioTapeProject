@@ -62,14 +62,15 @@ public class BaseActivity extends ActionBarActivity {
     };
     protected Activity oActivity = null;
     protected boolean playingMusic = false;
+
     // serve per ricevere i messaggi che mi arrivano dal service
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
-                Boolean stopService = intent.getBooleanExtra(ServiceListen.NAME_MESSAGE_STOPSERVICE, false);
-                Boolean startService = intent.getBooleanExtra(ServiceListen.NAME_MESSAGE_STARTSERVICE, false);
+                //Boolean stopService = intent.getBooleanExtra(ServiceListen.NAME_MESSAGE_STOPSERVICE, false);
+                //Boolean startService = intent.getBooleanExtra(ServiceListen.NAME_MESSAGE_STARTSERVICE, false);
                 playingMusic = intent.getBooleanExtra(ServiceListen.NAME_MESSAGE_PLAYINGMUSIC, false);
 
             } catch (Exception e) {

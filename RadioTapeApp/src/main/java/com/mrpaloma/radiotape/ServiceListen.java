@@ -40,11 +40,13 @@ public class ServiceListen extends Service implements PlayerCallback {
     public static int ONGOING_NOTIFICATION_ID = 2;
     public static String PARAM_PALINSESTO_NOW = "1";
     public static String PARAM_PALINSESTO_ALL = "";
+
     // This is the object that receives interactions from clients.  See
     // RemoteService for a more complete example.
     private final IBinder mBinder = new LocalBinder();
     protected Palinsesto palinsestoToday = new Palinsesto();
     protected PalinsestoAll palinsestoAll = new PalinsestoAll();
+
     // Unique Identification Number for the Notification.
     // We use it on Notification start, and to cancel it.
     private int NOTIFICATION = R.string.local_service_listen_started;
@@ -58,6 +60,9 @@ public class ServiceListen extends Service implements PlayerCallback {
     private AACPlayer aacPlayer = null;
     private Handler uiHandler;
     private boolean playerStarted;
+
+    private String streamTitle = "";
+    public String getStreamTitle() {return streamTitle; }
 
     public void setActivityLaunch(BaseActivity activity) {
         oActivity = activity;
@@ -206,7 +211,8 @@ public class ServiceListen extends Service implements PlayerCallback {
 
     protected void SendMessagePlayingMusic() {
         boolean playing = false;
-        if (player != null) playing = player.isPlaying();
+        //if (player != null) playing = player.isPlaying();
+        playing = playerStarted;
 
         Intent intent = new Intent(NAME_MESSAGE_INTENT);
         intent.putExtra(NAME_MESSAGE_STOPSERVICE, false);
@@ -219,7 +225,7 @@ public class ServiceListen extends Service implements PlayerCallback {
     /**
      * Show a notification while this service is running.
      */
-    private void showNotification(CharSequence text) {
+    public void showNotification(CharSequence text) {
 
         // In this sample, we'll use the same text for the ticker and the expanded notification
         //text = getText(R.string.local_service_upload_started);
@@ -259,7 +265,7 @@ public class ServiceListen extends Service implements PlayerCallback {
     }
 
     // Visualizza testo
-    private void setTextNotification(String testoView) {
+    /*private void setTextNotification(String testoView) {
         Context oContext = oActivity.getBaseContext();
         String ns = Context.NOTIFICATION_SERVICE;
         NotificationManager mNotificationManager = (NotificationManager) oContext.getSystemService(ns);
@@ -278,7 +284,7 @@ public class ServiceListen extends Service implements PlayerCallback {
 
         // icona nel tab "in corso" e non solo nelle notifiche
         startForeground(ONGOING_NOTIFICATION_ID, notification);
-    }
+    }*/
 
     // AAC
     private void initializeMediaPlayerAAC() {
@@ -371,6 +377,8 @@ public class ServiceListen extends Service implements PlayerCallback {
     }
 
     public void playerMetadata( final String key, final String value ) {
+        if ("StreamTitle".equals( key )) { streamTitle = value; }
+
         /*TextView tv = null;
 
         if ("StreamTitle".equals( key ) || "icy-name".equals( key ) || "icy-description".equals( key )) {

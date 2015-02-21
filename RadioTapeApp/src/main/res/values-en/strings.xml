@@ -16,6 +16,8 @@
     <string name="notificheon">On</string>
     <string name="notificheoff">Off</string>
     <string name="lblNotifiche">Notifications</string>
+    <string name="txtInizioOre">Start: </string>
+    <string name="txtBranoInOnda">Listening:</string>
     <string name="txtInfoApp">Benvenuti su RadioTape!&lt;br/>&lt;br/>Ma...cos\'è &lt;i>RADIOTAPE&lt;/i> ? È un contenitore di idee... esperienze... conoscenze... novità!&lt;br/>&lt;br/>Fatto di persone che hanno un\'idea, una visione: cambiare il modo di fare e vivere la radio, portando qualcosa di nuovo, di folle, svalvolato...&lt;br/>&lt;br/>Seguici su</string>
 
 </resources>

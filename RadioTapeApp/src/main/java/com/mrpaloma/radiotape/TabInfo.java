@@ -17,15 +17,20 @@ import android.widget.TextView;
  */
 public class TabInfo extends Fragment {
 
+    ImageView imgRadioInfo = null;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View oFragmentView = inflater.inflate(R.layout.tab_info, container, false);
 
-        String appName = getResources().getString(R.string.app_name);
+        //String appName = getResources().getString(R.string.app_name);
         String text = getResources().getString(R.string.txtInfoApp);
         //text += " <a href='http://www.radiotape.net/'>" + appName + "</a><br/>";
         //text += " <a href='https://twitter.com/radiotapenet/'>Twitter</a><br/>";
         //text += " <a href='https://www.facebook.com/RadioTapeNet/'>Facebook</a>";
+
+        imgRadioInfo = (ImageView)oFragmentView.findViewById(R.id.imageInfo);
+        if (imgRadioInfo != null) { new ImageLoadTask(getString(R.string.urlImageInfo), imgRadioInfo).execute(); }
 
         TextView textView =(TextView)oFragmentView.findViewById(R.id.txtInfoApp);
         textView.setClickable(true);

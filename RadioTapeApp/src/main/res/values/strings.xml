@@ -15,8 +15,8 @@
     <string name="lblMessage">Scrivi qui il tuo messaggio</string>
     <string name="lblButtonInviaMessaggio">Invia</string>
     <string name="txtInvioAvvenutoConSuccesso">Invio avvenuto con successo</string>
-    <string name="lblButtonPause" translatable="false">Pause</string>
-    <string name="lblButtonPlay" translatable="false">Play</string>
+    <string name="lblButtonPause" translatable="false">Pause radio</string>
+    <string name="lblButtonPlay" translatable="false">Play radio</string>
     <string name="UrlWsService" translatable="false">http://www.mrpaloma.com/wsmrpaloma.asmx</string>
     <string name="UrlWsServiceWebPage" translatable="false">http://www.mrpaloma.com/wswhereareyougoing.asmx</string>
     <string name="txtStateAscoltando">State ascoltando</string>
@@ -27,6 +27,9 @@
     <string name="txtErroreInternoRiprovare" translatable="false">Error restart app</string>
     <string name="tipo_app" translatable="false">RDIOTAPE</string>
     <string name="txtErrorConnection" translatable="false">Error connection data...</string>
+    <string name="txtInizioOre">Dalle: </string>
+    <string name="urlImageInfo" translatable="false">http://www.mrpaloma.com/radiotape/info01.jpg</string>
+    <string name="txtBranoInOnda">Brano in onda:</string>
     <string name="txtInfoApp">Benvenuti su RadioTape!&lt;br/>&lt;br/>Ma...cos\'è &lt;i>RADIOTAPE&lt;/i> ? È un contenitore di idee... esperienze... conoscenze... novità!&lt;br/>&lt;br/>Fatto di persone che hanno un\'idea, una visione: cambiare il modo di fare e vivere la radio, portando qualcosa di nuovo, di folle, svalvolato...&lt;br/>&lt;br/>Seguici su</string>
 
 </resources>
