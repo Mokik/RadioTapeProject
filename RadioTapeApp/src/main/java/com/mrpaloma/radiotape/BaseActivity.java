@@ -172,17 +172,29 @@ public class BaseActivity extends ActionBarActivity {
         serviceIntentListen = null;
     }
 
-    public void PauseListen() {
+    /*public void PauseListen() {
         if (srvListen != null) {
             srvListen.pausePlaying();
         }
+    }*/
+
+    public void PauseListenAAC() {
+        if (srvListen != null) {
+            srvListen.pausePlayingAAC();
+        }
     }
 
-    public void PlayListen() {
+    public void PlayListenAAC() {
+        if (srvListen != null) {
+            srvListen.startPlayingAAC();
+        }
+    }
+
+    /*public void PlayListen() {
         if (srvListen != null) {
             srvListen.startPlaying();
         }
-    }
+    }*/
 
     protected void updateControl() {
     }

@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -45,6 +46,7 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
     ViewPager mViewPager;
 
     int indexSleepButton = 1;
+    String lastImageLoad = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -251,8 +253,11 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
                                     if (txtDescrizione != null)
                                         txtDescrizione.setText(g.getDescrizione());
 
-                                    //ImageView imgProgramma =(ImageView)v.findViewById(R.id.iconPalinsesto);
-                                    //if (txtDescrizione != null) imgProgramma.setImageUrl(g.getImage());
+                                    ImageView imgProgramma =(ImageView)v.findViewById(R.id.iconProgramma);
+                                    String image = g.getImage();
+                                    if ((imgProgramma != null) && (!image.equals("")) && (image != null) && (!lastImageLoad.equals(image))) {
+                                        new ImageLoadTask(image, imgProgramma).execute();
+                                        lastImageLoad = image;}
                                 }
                             }
                         }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 /**
@@ -33,6 +34,8 @@ public class TabListen extends Fragment {
         btnPause = (Button) oFragmentView.findViewById(R.id.btnPause);
         btnPlay = (Button) oFragmentView.findViewById(R.id.btnPlay);
 
+        //new ImageLoadTask("http://www.mrpaloma.com/radiotape/pes.jpg", (ImageView)oFragmentView.findViewById(R.id.iconProgramma)).execute();
+
         if (btnPause != null) {
             btnPause.setOnClickListener(new View.OnClickListener() {
 
@@ -41,7 +44,8 @@ public class TabListen extends Fragment {
 
                     try {
                         if (oActivity != null) {
-                            oActivity.PauseListen();
+                            //oActivity.PauseListen();
+                            oActivity.PauseListenAAC();
 
                             if (btnPlay != null) btnPlay.setVisibility(View.VISIBLE);
                             if (btnPause != null) btnPause.setVisibility(View.GONE);
@@ -63,7 +67,8 @@ public class TabListen extends Fragment {
 
                     try {
                         if (oActivity != null) {
-                            oActivity.PlayListen();
+                            //oActivity.PlayListen();
+                            oActivity.PlayListenAAC();
 
                             if (btnPlay != null) btnPlay.setVisibility(View.GONE);
                             if (btnPause != null) btnPause.setVisibility(View.VISIBLE);

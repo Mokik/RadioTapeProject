@@ -6,7 +6,9 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioTrack;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Handler;
@@ -18,13 +20,17 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.spoledge.aacdecoder.AACPlayer;
+import com.spoledge.aacdecoder.PlayerCallback;
+
 import org.ksoap2.serialization.PropertyInfo;
 import org.ksoap2.serialization.SoapObject;
+
 
 /**
  * Created by MicheleMaccini on 04/02/2015.
  */
-public class ServiceListen extends Service {
+public class ServiceListen extends Service implements PlayerCallback {
 
     public static String NAME_MESSAGE_INTENT = "MessageServiceListen";
 
@@ -47,7 +53,11 @@ public class ServiceListen extends Service {
     private NotificationManager mNM;
     private BaseActivity oActivity = null;
     private Boolean loopWork = false;
-    private MediaPlayer player;
+
+    private MediaPlayer player = null;
+    private AACPlayer aacPlayer = null;
+    private Handler uiHandler;
+    private boolean playerStarted;
 
     public void setActivityLaunch(BaseActivity activity) {
         oActivity = activity;
@@ -160,10 +170,13 @@ public class ServiceListen extends Service {
             showNotification(text);
 
             // inizializzo player
-            if (player == null) initializeMediaPlayer();
+            //if (player == null) { initializeMediaPlayer(); }
 
             // avvio player
-            if ((player != null) && (!player.isPlaying())) startPlaying();
+            //if ((player != null) && (!player.isPlaying())) startPlaying();
+
+            // inizializzo player AAC
+            initializeMediaPlayerAAC();
 
         } catch (Exception e) {
             EasyTrackerCustom.AddException(null, e, EasyTrackerCustom.TRACK_SERVICELISTEN);
@@ -267,6 +280,145 @@ public class ServiceListen extends Service {
         startForeground(ONGOING_NOTIFICATION_ID, notification);
     }
 
+    // AAC
+    private void initializeMediaPlayerAAC() {
+        try {
+            try {
+                uiHandler = new Handler();
+
+                java.net.URL.setURLStreamHandlerFactory( new java.net.URLStreamHandlerFactory(){
+                    public java.net.URLStreamHandler createURLStreamHandler( String protocol ) {
+                        Log.d( BaseActivity.CODE_LOG, "Asking for stream handler for protocol: '" + protocol + "'" );
+                        if ("icy".equals( protocol )) return new com.spoledge.aacdecoder.IcyURLStreamHandler();
+                        return null;
+                    }
+                });
+            }
+            catch (Throwable t) {
+                Log.w( BaseActivity.CODE_LOG, "Cannot set the ICY URLStreamHandler - maybe already set ? - " + t );
+            }
+
+        } catch (Exception e) {
+            EasyTrackerCustom.AddException(null, e, EasyTrackerCustom.TRACK_SERVICELISTEN_INITIALIZEPLAYERAAC);
+        }
+    }
+
+    public void startPlayingAAC() {
+        stopPlayingAAC();
+
+        aacPlayer = new AACPlayer(this, 1500, 700);
+        aacPlayer.playAsync(getResources().getString(R.string.urlRadio));
+    }
+
+    private void stopPlayingAAC() {
+        if ((playerStarted) && (aacPlayer != null)) {
+            aacPlayer.stop();
+
+        }
+
+        aacPlayer = null;
+    }
+
+    public void pausePlayingAAC() {
+        if ((playerStarted) && (aacPlayer != null)) {
+            aacPlayer.stop();
+
+        }
+
+        aacPlayer = null;
+    }
+
+    public void playerStarted() {
+        uiHandler.post( new Runnable() {
+            public void run() {
+                playerStarted = true;
+            }
+        });
+    }
+
+    public void playerStopped( final int perf ) {
+        uiHandler.post( new Runnable() {
+            public void run() {
+                playerStarted = false;
+            }
+        });
+    }
+
+    public void playerException( final Throwable t) {
+        uiHandler.post( new Runnable() {
+            public void run() {
+                if (oActivity == null) return;
+                try { throw new Exception(t.toString()); }
+                catch (Exception ex) { EasyTrackerCustom.AddException(oActivity, ex, EasyTrackerCustom.TRACK_SERVICELISTEN_INITIALIZEPLAYERAAC); }
+
+
+                /*new AlertDialog.Builder( AACPlayerActivity.this )
+                        .setTitle( R.string.text_exception )
+                        .setMessage( t.toString())
+                        .setNeutralButton( R.string.button_close,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick( DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                }
+                        )
+                        .show();
+
+                txtStatus.setText( R.string.text_stopped );
+                if (playerStarted) playerStopped( 0 );*/
+            }
+        });
+    }
+
+    public void playerMetadata( final String key, final String value ) {
+        /*TextView tv = null;
+
+        if ("StreamTitle".equals( key ) || "icy-name".equals( key ) || "icy-description".equals( key )) {
+            tv = txtMetaTitle;
+        }
+        else if ("StreamUrl".equals( key ) || "icy-url".equals( key )) {
+            tv = txtMetaUrl;
+        }
+        else if ("icy-genre".equals( key )) {
+            tv = txtMetaGenre;
+        }
+        else return;
+
+        final TextView ftv = tv;
+
+        uiHandler.post( new Runnable() {
+            public void run() {
+                ftv.setText( value );
+            }
+        });*/
+    }
+
+
+    /**
+     * This method is called periodically by PCMFeed.
+     *
+     * @param isPlaying false means that the PCM data are being buffered,
+     *          but the audio is not playing yet
+     *
+     * @param audioBufferSizeMs the buffered audio data expressed in milliseconds of playing
+     * @param audioBufferCapacityMs the total capacity of audio buffer expressed in milliseconds of playing
+     */
+    public void playerPCMFeedBuffer( final boolean isPlaying,
+                                     final int audioBufferSizeMs, final int audioBufferCapacityMs ) {
+
+        uiHandler.post( new Runnable() {
+            public void run() {
+                int tmp = audioBufferSizeMs;
+                boolean tmp2 = isPlaying;
+
+                //progress.setProgress( audioBufferSizeMs * progress.getMax() / audioBufferCapacityMs );
+                //if (isPlaying) txtStatus.setText( R.string.text_playing );
+            }
+        });
+    }
+
+    public void playerAudioTrackCreated( AudioTrack atrack ) {}
+
     private void initializeMediaPlayer() {
 
         try {
@@ -350,6 +502,7 @@ public class ServiceListen extends Service {
                     }
 
                     if (!oActivity.getStopListenNotification()) {
+                        startPlayingAAC(); // avvio il player
 
                         // invio messaggio per indicare che il servizio è partito
                         SendMessageStartService();
@@ -394,7 +547,8 @@ public class ServiceListen extends Service {
                     palinsestoAll.ITEMS.clear();
                     palinsestoAll.ITEM_MAP.clear();
 
-                    stopPlaying();
+                    //stopPlaying();
+                    stopPlayingAAC();
 
                 } catch (Exception e) {
                     EasyTrackerCustom.AddException(oActivity, e, EasyTrackerCustom.TRACK_ACTION_LOOPSERVICELISTEN);

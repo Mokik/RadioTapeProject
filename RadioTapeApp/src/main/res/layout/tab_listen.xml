@@ -78,7 +78,7 @@
                     android:gravity="center_vertical">
 
                     <ImageView
-                        android:id="@+id/iconPalinsesto"
+                        android:id="@+id/iconProgramma"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="@dimen/Marg20"

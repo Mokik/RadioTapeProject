@@ -39,6 +39,7 @@ public  class  EasyTrackerCustom {
 
     public static String TRACK_SERVICELISTEN = "ServiceListen";
     public static String TRACK_SERVICELISTEN_INITIALIZEPLAYER = "InitializePlayer";
+    public static String TRACK_SERVICELISTEN_INITIALIZEPLAYERAAC = "InitializePlayerAAC";
 
     public static String DEBUGSI = "debug";
 
