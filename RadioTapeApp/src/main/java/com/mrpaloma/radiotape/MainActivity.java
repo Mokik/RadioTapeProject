@@ -50,8 +50,6 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
     private String lastImageLoad = "";
     protected void resetLastImageLoad() { lastImageLoad = ""; }
 
-    private String lastTitle = "";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -273,12 +271,6 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
                                     TextView txtBranoInOnda = (TextView) v.findViewById(R.id.txtBranoInOnda);
                                     if (txtBranoInOnda != null) {
                                         txtBranoInOnda.setText(srvListen.getStreamTitle());
-                                    }
-
-                                    // aggiorno il titolo notification
-                                    if (!lastTitle.equals(g.getTitolo())) {
-                                        srvListen.showNotification(g.getTitolo());
-                                        lastTitle = g.getTitolo();
                                     }
                                 }
                             }

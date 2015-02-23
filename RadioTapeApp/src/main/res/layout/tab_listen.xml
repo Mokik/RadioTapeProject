@@ -40,51 +40,69 @@
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:id="@+id/iconProgramma"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/Marg10"
-                        android:src="@drawable/ic_launcher"></ImageView>
-
-                    <TextView
-                        android:id="@+id/txtTitoloNow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/SizeTextTitoloNow"
-                        android:textStyle="bold|italic"
-                        android:text="loading..."></TextView>
-
-                    <TextView
-                        android:id="@+id/txtInizioOre"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/SizeTextInizioOre"
-                        android:text="loading..."></TextView>
+                    android:orientation="vertical">
 
                     <LinearLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/Marg20"
-                        android:orientation="vertical">
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/HeightImageProgramma"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iconProgramma"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:layout_marginBottom="@dimen/Marg10"
+                            android:adjustViewBounds="true"
+                            android:src="@drawable/ic_launcher"></ImageView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="2"
+                        android:orientation="vertical"
+                        android:gravity="center">
 
                         <TextView
-                            android:id="@+id/lblBranoInOnda"
+                            android:id="@+id/txtTitoloNow"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/SizeTextBranoInOnda"
-                            android:text="@string/txtBranoInOnda"></TextView>
-
-                        <TextView
-                            android:id="@+id/txtBranoInOnda"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textStyle="italic"
-                            android:textSize="@dimen/SizeTextBranoInOnda"
+                            android:textSize="@dimen/SizeTextTitoloNow"
+                            android:textStyle="bold|italic"
                             android:text="loading..."></TextView>
+
+                        <TextView
+                            android:id="@+id/txtInizioOre"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/SizeTextInizioOre"
+                            android:text="loading..."></TextView>
+
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/Marg20"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/lblBranoInOnda"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/SizeTextBranoInOnda"
+                                android:text="@string/txtBranoInOnda"></TextView>
+
+                            <TextView
+                                android:id="@+id/txtBranoInOnda"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textStyle="italic"
+                                android:textSize="@dimen/SizeTextBranoInOnda"
+                                android:text="loading..."></TextView>
+
+                        </LinearLayout>
 
                     </LinearLayout>
 

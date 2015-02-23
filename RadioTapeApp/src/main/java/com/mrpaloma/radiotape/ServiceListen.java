@@ -64,6 +64,8 @@ public class ServiceListen extends Service implements PlayerCallback {
     private String streamTitle = "";
     public String getStreamTitle() {return streamTitle; }
 
+    private String lastProgramma = "";
+
     public void setActivityLaunch(BaseActivity activity) {
         oActivity = activity;
     }
@@ -126,6 +128,18 @@ public class ServiceListen extends Service implements PlayerCallback {
 
             @Override
             protected void onPostExecute(Void result) {
+                if (sParamWs.equals(PARAM_PALINSESTO_NOW)) {
+                    Palinsesto ptd = getPalinsestoToday();
+                    if ((ptd != null) && (ptd.ITEMS.size() > 0)) {
+                        Palinsesto.Giorno g = ptd.ITEMS.get(0);
+
+                        if ((!lastProgramma.equals(g.getTitolo()) && (g != null))) {
+                            showNotification(g.getTitolo());
+                            lastProgramma = g.getTitolo();
+                        }
+                    }
+                }
+
             }
 
         }.execute(null, null, null);
@@ -172,7 +186,9 @@ public class ServiceListen extends Service implements PlayerCallback {
 
             // Display a notification about us starting.  We put an icon in the status bar.
             CharSequence text = getText(R.string.local_service_listen_started);
-            showNotification(text);
+            if (!streamTitle.equals("")) showNotification(text);
+
+            lastProgramma = text.toString();
 
             // inizializzo player
             //if (player == null) { initializeMediaPlayer(); }
@@ -225,7 +241,7 @@ public class ServiceListen extends Service implements PlayerCallback {
     /**
      * Show a notification while this service is running.
      */
-    public void showNotification(CharSequence text) {
+    private void showNotification(CharSequence text) {
 
         // In this sample, we'll use the same text for the ticker and the expanded notification
         //text = getText(R.string.local_service_upload_started);

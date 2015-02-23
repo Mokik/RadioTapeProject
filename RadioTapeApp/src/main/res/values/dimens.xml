@@ -26,4 +26,5 @@
     <dimen name="SizeErrorConnection">20dp</dimen>
     <dimen name="SizeTextInizioOre">13dp</dimen>
     <dimen name="SizeTextBranoInOnda">15dp</dimen>
+    <dimen name="HeightImageProgramma">150dp</dimen>
 </resources>
