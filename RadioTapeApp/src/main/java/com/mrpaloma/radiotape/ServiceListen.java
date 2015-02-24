@@ -186,7 +186,7 @@ public class ServiceListen extends Service implements PlayerCallback {
 
             // Display a notification about us starting.  We put an icon in the status bar.
             CharSequence text = getText(R.string.local_service_listen_started);
-            if (!streamTitle.equals("")) showNotification(text);
+            //if (!streamTitle.equals("")) showNotification(text);
 
             lastProgramma = text.toString();
 
