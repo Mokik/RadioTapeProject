@@ -537,6 +537,8 @@ public class ServiceListen extends Service implements PlayerCallback {
 
                         // cycle
                         while (loopWork) {
+                            if (oActivity.getStopListenNotification()) loopWork = false;
+
                             SendMessagePlayingMusic();
 
                             // controllo se devo chiamare il palinsesto

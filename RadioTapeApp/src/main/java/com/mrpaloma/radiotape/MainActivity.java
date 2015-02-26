@@ -67,6 +67,10 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
                 stopListenNotification = bStopListen;
 
                 //getIntent().removeExtra(ServiceListen.NAME_MESSAGE_STOPSERVICE);
+                long value = 0;
+                if (stopListenNotification) value = 1;
+
+                EasyTrackerCustom.AddEvent(oActivity, EasyTrackerCustom.TRACK_EVENT, EasyTrackerCustom.TRACK_ACTION_NOTIFICATIONCLOSE, EasyTrackerCustom.TRACK_LABEL_BTN_NOTIFICATION, value);
             }
             setStopNotification(context, stopListenNotification);
 
@@ -181,6 +185,9 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
             return true;
 
         } else if (id == R.id.action_exit) {
+            long value = 1;
+            EasyTrackerCustom.AddEvent(oActivity, EasyTrackerCustom.TRACK_EVENT, EasyTrackerCustom.TRACK_ACTION_MENUCLOSE, EasyTrackerCustom.TRACK_LABEL_BTN_MENU, value);
+
             CloseApp();
         }
 

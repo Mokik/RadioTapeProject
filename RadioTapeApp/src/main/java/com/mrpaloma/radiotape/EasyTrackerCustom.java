@@ -18,13 +18,15 @@ import com.google.analytics.tracking.android.StandardExceptionParser;
  */
 public  class  EasyTrackerCustom {
 
-    public static String TRACK_EVENT = "RecordingRoutes";
+    public static String TRACK_EVENT = "GestioneRadio";
 
     public static String TRACK_TIMING_REGISTERAPP = "RegistrApp";
 
     public static String TRACK_ACTION_LOOPSERVICELISTEN = "LoopServiceListen";
     public static String TRACK_ACTION_PAUSE = "Pause";
     public static String TRACK_ACTION_PLAY = "Play";
+    public static String TRACK_ACTION_MENUCLOSE = "MenuClose";
+    public static String TRACK_ACTION_NOTIFICATIONCLOSE = "NotificationClose";
 
     public static String TRACK_EVENT_CONNESSIONEDATI = "ErroreConnessioneDati";
     public static String TRACK_EVENT_REGISTERAPP = "RegisterApp";
@@ -36,6 +38,8 @@ public  class  EasyTrackerCustom {
 
     public static String TRACK_LABEL_PAUSE = "Button";
     public static String TRACK_LABEL_PLAY = "Button";
+    public static String TRACK_LABEL_BTN_NOTIFICATION = "NotificationButton";
+    public static String TRACK_LABEL_BTN_MENU = "MenuButton";
 
     public static String TRACK_SERVICELISTEN = "ServiceListen";
     public static String TRACK_SERVICELISTEN_INITIALIZEPLAYER = "InitializePlayer";

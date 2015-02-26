@@ -100,6 +100,7 @@ public class BaseActivity extends ActionBarActivity {
     protected String regid;
     protected String sCodiceAndroid;
     Intent serviceIntentListen = null;
+
     /**
      * Substitute you own sender ID here. This is the project number you got
      * from the API Console, as described in "Getting Started."
@@ -107,13 +108,13 @@ public class BaseActivity extends ActionBarActivity {
     String SENDER_ID = NumberSerialKey.SENDER_ID_CLOUD_MESSAGE;
     private Handler updateHandler = new Handler();
     private boolean bindedListening = false;
+
     /**
      * Registers the application with GCM servers asynchronously.
      * <p/>
      * Stores the registration ID and app versionCode in the application's
      * shared preferences.
      */
-
     private AsyncTask<Void, Void, Void> mRegisterAppTask;
 
     // controllo se ho la connessione dei dati
@@ -158,13 +159,12 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     public boolean getStopListenNotification() {
+        stopListenNotification = getStopNotification(this.getBaseContext());
         return stopListenNotification;
     }
 
     public void StopListen() {
-        if (srvListen != null) {
-            srvListen.setStopThread();
-        }
+        if (srvListen != null) { srvListen.setStopThread(); }
 
         StopListenService();
 
@@ -229,6 +229,8 @@ public class BaseActivity extends ActionBarActivity {
         if (updateHandler == null) updateHandler = new Handler();
         if (updateHandler != null) updateHandler.postDelayed(updateTimerThread, 200);
 
+        stopListenNotification = getStopNotification(oActivity.getBaseContext());
+
         oActivity = this;
     }
 
@@ -257,15 +259,17 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     public void StartListenService() {
-        // avvio il servizio
+        if (!stopListenNotification) {
+            // avvio il servizio
 
-        Context context = this.getBaseContext();
-        //serviceIntentUpload.putExtra(ServiceUploading.PARAM_ACTION_UNIQUEROUTE, getUniqueCode());
-        //serviceIntentUpload.putExtra(ServiceUploading.PARAM_ACTION_UPLOAD, true);
-        //serviceIntentUpload.putExtra(ServiceUploading.PARAM_ACTION_CREATEFILEKML, false);
-        context.startService(serviceIntentListen);
+            Context context = this.getBaseContext();
+            //serviceIntentUpload.putExtra(ServiceUploading.PARAM_ACTION_UNIQUEROUTE, getUniqueCode());
+            //serviceIntentUpload.putExtra(ServiceUploading.PARAM_ACTION_UPLOAD, true);
+            //serviceIntentUpload.putExtra(ServiceUploading.PARAM_ACTION_CREATEFILEKML, false);
+            context.startService(serviceIntentListen);
 
-        connectServiceListening(); // collego il servizio per avere informazioni
+            connectServiceListening(); // collego il servizio per avere informazioni
+        }
     }
 
     public void StopListenService() {
