@@ -55,7 +55,7 @@
                             android:layout_weight="1"
                             android:layout_marginBottom="@dimen/Marg10"
                             android:adjustViewBounds="true"
-                            android:src="@drawable/ic_launcher"></ImageView>
+                            android:src="@drawable/sfondotrasparente"></ImageView>
 
                     </LinearLayout>
 
@@ -139,7 +139,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/Marg20"
                     android:textSize="@dimen/SizeTextDescrizioneNow"
-                    android:text="loading..."></TextView>
+                    android:text="loading..."
+                    android:visibility="gone"></TextView>
 
             </LinearLayout>
 

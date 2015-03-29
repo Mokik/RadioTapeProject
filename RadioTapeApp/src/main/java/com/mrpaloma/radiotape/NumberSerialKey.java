@@ -5,4 +5,5 @@ package com.mrpaloma.radiotape;
  */
 public class NumberSerialKey {
     static String SENDER_ID_CLOUD_MESSAGE = "";
+    static String PASSWORD_ADMIN_STREAM = "";
 }

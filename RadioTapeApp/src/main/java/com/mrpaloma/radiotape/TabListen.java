@@ -44,8 +44,8 @@ public class TabListen extends Fragment {
 
                     try {
                         if (oActivity != null) {
-                            //oActivity.PauseListen();
-                            oActivity.PauseListenAAC();
+                            oActivity.PauseListen();
+                            //oActivity.PauseListenAAC();
 
                             if (btnPlay != null) btnPlay.setVisibility(View.VISIBLE);
                             if (btnPause != null) btnPause.setVisibility(View.GONE);
@@ -67,8 +67,8 @@ public class TabListen extends Fragment {
 
                     try {
                         if (oActivity != null) {
-                            //oActivity.PlayListen();
-                            oActivity.PlayListenAAC();
+                            oActivity.PlayListen();
+                            //oActivity.PlayListenAAC();
 
                             if (btnPlay != null) btnPlay.setVisibility(View.GONE);
                             if (btnPause != null) btnPause.setVisibility(View.VISIBLE);

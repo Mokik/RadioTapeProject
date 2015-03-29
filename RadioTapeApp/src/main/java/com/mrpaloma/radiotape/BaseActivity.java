@@ -35,6 +35,10 @@ public class BaseActivity extends ActionBarActivity {
     private static final String PROPERTY_APP_VERSION = "appVersion";
     public static String CODE_LOG = "RadioTape";
     public static String PARAM_ANDROIDCODE = "AndroidCode";
+    //public static String PARAM_SERVICE = "ServiceIntent";
+
+    protected boolean startPlaying = false;
+
     protected ServiceListen srvListen = null;
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -47,6 +51,9 @@ public class BaseActivity extends ActionBarActivity {
             srvListen = ((ServiceListen.LocalBinder) binder).getService();
             if (srvListen != null) {
                 srvListen.setActivityLaunch(BaseActivity.this);
+
+                if (startPlaying) srvListen.startPlaying();
+                startPlaying = false;
             }
 
         }
@@ -164,7 +171,10 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     public void StopListen() {
-        if (srvListen != null) { srvListen.setStopThread(); }
+        if (srvListen != null) {
+
+            srvListen.setStopThread();
+        }
 
         StopListenService();
 
@@ -173,29 +183,29 @@ public class BaseActivity extends ActionBarActivity {
         serviceIntentListen = null;
     }
 
-    /*public void PauseListen() {
+    public void PauseListen() {
         if (srvListen != null) {
             srvListen.pausePlaying();
         }
-    }*/
+    }
 
-    public void PauseListenAAC() {
+    /*public void PauseListenAAC() {
         if (srvListen != null) {
             srvListen.pausePlayingAAC();
         }
-    }
+    }*/
 
-    public void PlayListenAAC() {
+   /* public void PlayListenAAC() {
         if (srvListen != null) {
             srvListen.startPlayingAAC();
         }
-    }
+    }*/
 
-    /*public void PlayListen() {
+    public void PlayListen() {
         if (srvListen != null) {
             srvListen.startPlaying();
         }
-    }*/
+    }
 
     protected void updateControl() {
     }
@@ -242,6 +252,8 @@ public class BaseActivity extends ActionBarActivity {
 
         if (updateHandler != null) updateHandler.removeCallbacks(updateTimerThread);
         updateHandler = null;
+
+        disconnectServiceListening();
     }
 
     @Override
@@ -259,16 +271,27 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     public void StartListenService() {
-        if (!stopListenNotification) {
-            // avvio il servizio
+        Intent serviceInt = SplashActivity.serviceIntentListen;
+        if (serviceInt != null) {
+            startPlaying = true;
+            SplashActivity.serviceIntentListen = null;
 
-            Context context = this.getBaseContext();
-            //serviceIntentUpload.putExtra(ServiceUploading.PARAM_ACTION_UNIQUEROUTE, getUniqueCode());
-            //serviceIntentUpload.putExtra(ServiceUploading.PARAM_ACTION_UPLOAD, true);
-            //serviceIntentUpload.putExtra(ServiceUploading.PARAM_ACTION_CREATEFILEKML, false);
-            context.startService(serviceIntentListen);
-
+            serviceIntentListen = serviceInt;
             connectServiceListening(); // collego il servizio per avere informazioni
+
+        } else {
+            if (!stopListenNotification) {
+                // avvio il servizio
+                serviceIntentListen = new Intent(this, ServiceListen.class);
+
+                Context context = this.getBaseContext();
+                //serviceIntentUpload.putExtra(ServiceUploading.PARAM_ACTION_UNIQUEROUTE, getUniqueCode());
+                //serviceIntentUpload.putExtra(ServiceUploading.PARAM_ACTION_UPLOAD, true);
+                //serviceIntentUpload.putExtra(ServiceUploading.PARAM_ACTION_CREATEFILEKML, false);
+                context.startService(serviceIntentListen);
+
+                connectServiceListening(); // collego il servizio per avere informazioni
+            }
         }
     }
 

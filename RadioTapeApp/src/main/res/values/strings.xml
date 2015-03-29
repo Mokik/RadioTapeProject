@@ -10,8 +10,11 @@
     <string name="title_palinsesto">Palinsesto</string>
     <string name="title_activity_setting">Impostazioni</string>
     <string name="action_settings">Impostazioni</string>
+    <string name="title_activity_splahscreen" translatable="false">RadioTape</string>
     <string name="action_exits">Chiudi</string>
-    <string name="urlRadio" translatable="false">http://nr5.newradio.it:8843/;</string>
+    <string name="urlRadioAAC" translatable="false">http://nr5.newradio.it:8843/;</string>
+    <string name="urlRadio" translatable="false">http://s25.myradiostream.com:5976/;</string>
+    <string name="urlMetadata" translatable="false">http://s25.myradiostream.com:5976/admin.cgi?mode=viewxml&amp;page=1&amp;sid=1</string>
     <string name="lblMessage">Scrivi qui il tuo messaggio</string>
     <string name="lblButtonInviaMessaggio">Invia</string>
     <string name="txtInvioAvvenutoConSuccesso">Invio avvenuto con successo</string>
@@ -30,6 +33,6 @@
     <string name="txtInizioOre">Dalle: </string>
     <string name="urlImageInfo" translatable="false">http://www.mrpaloma.com/radiotape/info01.jpg</string>
     <string name="txtBranoInOnda">Brano in onda:</string>
-    <string name="txtInfoApp">Benvenuti su RadioTape!&lt;br/>&lt;br/>Ma...cos\'è &lt;i>RADIOTAPE&lt;/i> ? È un contenitore di idee... esperienze... conoscenze... novità!&lt;br/>&lt;br/>Fatto di persone che hanno un\'idea, una visione: cambiare il modo di fare e vivere la radio, portando qualcosa di nuovo, di folle, svalvolato...&lt;br/>&lt;br/>Seguici su</string>
+    <string name="txtInfoApp">Benvenuti su RadioTape!&lt;br/>&lt;br/>Ma...cos\'è &lt;i>RADIOTAPE&lt;/i> ? È un contenitore di idee... esperienze... conoscenze... novità!&lt;br/>&lt;br/>Fatto di persone che hanno un\'idea, una visione: cambiare il modo di fare e vivere la radio, portando qualcosa di nuovo, di folle, svalvolato...</string>
 
 </resources>

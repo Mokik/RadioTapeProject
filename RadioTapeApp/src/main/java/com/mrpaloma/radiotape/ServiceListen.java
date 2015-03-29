@@ -7,6 +7,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioTrack;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -26,11 +27,15 @@ import com.spoledge.aacdecoder.PlayerCallback;
 import org.ksoap2.serialization.PropertyInfo;
 import org.ksoap2.serialization.SoapObject;
 
+import java.net.URI;
+import java.util.List;
+
 
 /**
  * Created by MicheleMaccini on 04/02/2015.
  */
-public class ServiceListen extends Service implements PlayerCallback {
+//public class ServiceListen extends Service implements PlayerCallback {
+public class ServiceListen extends Service {
 
     public static String NAME_MESSAGE_INTENT = "MessageServiceListen";
 
@@ -57,9 +62,10 @@ public class ServiceListen extends Service implements PlayerCallback {
     private Boolean loopWork = false;
 
     private MediaPlayer player = null;
-    private AACPlayer aacPlayer = null;
-    private Handler uiHandler;
-    private boolean playerStarted;
+
+    //private AACPlayer aacPlayer = null;
+    //private Handler uiHandler;
+    //private boolean playerStarted;
 
     private String streamTitle = "";
     public String getStreamTitle() {return streamTitle; }
@@ -71,6 +77,8 @@ public class ServiceListen extends Service implements PlayerCallback {
     }
 
     public void setStopThread() {
+        stopPlaying();
+
         loopWork = false;
     }
 
@@ -191,13 +199,13 @@ public class ServiceListen extends Service implements PlayerCallback {
             lastProgramma = text.toString();
 
             // inizializzo player
-            //if (player == null) { initializeMediaPlayer(); }
+            if (player == null) { initializeMediaPlayer(); }
 
             // avvio player
             //if ((player != null) && (!player.isPlaying())) startPlaying();
 
             // inizializzo player AAC
-            initializeMediaPlayerAAC();
+            //initializeMediaPlayerAAC();
 
         } catch (Exception e) {
             EasyTrackerCustom.AddException(null, e, EasyTrackerCustom.TRACK_SERVICELISTEN);
@@ -227,8 +235,8 @@ public class ServiceListen extends Service implements PlayerCallback {
 
     protected void SendMessagePlayingMusic() {
         boolean playing = false;
-        //if (player != null) playing = player.isPlaying();
-        playing = playerStarted;
+        if (player != null) playing = player.isPlaying();
+        //playing = playerStarted;
 
         Intent intent = new Intent(NAME_MESSAGE_INTENT);
         intent.putExtra(NAME_MESSAGE_STOPSERVICE, false);
@@ -303,7 +311,7 @@ public class ServiceListen extends Service implements PlayerCallback {
     }*/
 
     // AAC
-    private void initializeMediaPlayerAAC() {
+    /*private void initializeMediaPlayerAAC() {
         try {
             try {
                 uiHandler = new Handler();
@@ -323,55 +331,55 @@ public class ServiceListen extends Service implements PlayerCallback {
         } catch (Exception e) {
             EasyTrackerCustom.AddException(null, e, EasyTrackerCustom.TRACK_SERVICELISTEN_INITIALIZEPLAYERAAC);
         }
-    }
+    }*/
 
-    public void startPlayingAAC() {
+    /*public void startPlayingAAC() {
         stopPlayingAAC();
 
         aacPlayer = new AACPlayer(this, 1500, 700);
         aacPlayer.playAsync(getResources().getString(R.string.urlRadio));
-    }
+    }*/
 
-    private void stopPlayingAAC() {
+    /*private void stopPlayingAAC() {
         if ((playerStarted) && (aacPlayer != null)) {
             aacPlayer.stop();
 
         }
 
         aacPlayer = null;
-    }
+    }*/
 
-    public void pausePlayingAAC() {
+    /*public void pausePlayingAAC() {
         if ((playerStarted) && (aacPlayer != null)) {
             aacPlayer.stop();
 
         }
 
         aacPlayer = null;
-    }
+    }*/
 
-    public void playerStarted() {
-        uiHandler.post( new Runnable() {
-            public void run() {
-                playerStarted = true;
-            }
-        });
-    }
+    //public void playerStarted() {
+        //uiHandler.post( new Runnable() {
+        //    public void run() {
+        //        playerStarted = true;
+        //    }
+        //});
+    //}
 
-    public void playerStopped( final int perf ) {
-        uiHandler.post( new Runnable() {
-            public void run() {
-                playerStarted = false;
-            }
-        });
-    }
+    //public void playerStopped( final int perf ) {
+        //uiHandler.post( new Runnable() {
+        //    public void run() {
+        //        playerStarted = false;
+        //    }
+        //});
+    //}
 
-    public void playerException( final Throwable t) {
-        uiHandler.post( new Runnable() {
-            public void run() {
-                if (oActivity == null) return;
-                try { throw new Exception(t.toString()); }
-                catch (Exception ex) { EasyTrackerCustom.AddException(oActivity, ex, EasyTrackerCustom.TRACK_SERVICELISTEN_INITIALIZEPLAYERAAC); }
+    //public void playerException( final Throwable t) {
+    //    uiHandler.post( new Runnable() {
+    //        public void run() {
+    //            if (oActivity == null) return;
+    //            try { throw new Exception(t.toString()); }
+    //            catch (Exception ex) { EasyTrackerCustom.AddException(oActivity, ex, EasyTrackerCustom.TRACK_SERVICELISTEN_INITIALIZEPLAYERAAC); }
 
 
                 /*new AlertDialog.Builder( AACPlayerActivity.this )
@@ -388,12 +396,12 @@ public class ServiceListen extends Service implements PlayerCallback {
 
                 txtStatus.setText( R.string.text_stopped );
                 if (playerStarted) playerStopped( 0 );*/
-            }
-        });
-    }
+    //        }
+    //    });
+    //}
 
-    public void playerMetadata( final String key, final String value ) {
-        if ("StreamTitle".equals( key )) { streamTitle = value; }
+    //public void playerMetadata( final String key, final String value ) {
+        //if ("StreamTitle".equals( key )) { streamTitle = value; }
 
         /*TextView tv = null;
 
@@ -415,39 +423,41 @@ public class ServiceListen extends Service implements PlayerCallback {
                 ftv.setText( value );
             }
         });*/
-    }
+    //}
 
+    //public void playerPCMFeedBuffer( final boolean isPlaying,
+    //                                 final int audioBufferSizeMs, final int audioBufferCapacityMs ) {
 
-    /**
-     * This method is called periodically by PCMFeed.
-     *
-     * @param isPlaying false means that the PCM data are being buffered,
-     *          but the audio is not playing yet
-     *
-     * @param audioBufferSizeMs the buffered audio data expressed in milliseconds of playing
-     * @param audioBufferCapacityMs the total capacity of audio buffer expressed in milliseconds of playing
-     */
-    public void playerPCMFeedBuffer( final boolean isPlaying,
-                                     final int audioBufferSizeMs, final int audioBufferCapacityMs ) {
-
-        uiHandler.post( new Runnable() {
-            public void run() {
-                int tmp = audioBufferSizeMs;
-                boolean tmp2 = isPlaying;
+    //    uiHandler.post( new Runnable() {
+    //        public void run() {
+    //            int tmp = audioBufferSizeMs;
+    //            boolean tmp2 = isPlaying;
 
                 //progress.setProgress( audioBufferSizeMs * progress.getMax() / audioBufferCapacityMs );
                 //if (isPlaying) txtStatus.setText( R.string.text_playing );
-            }
-        });
-    }
+    //        }
+    //    });
+    //}
 
-    public void playerAudioTrackCreated( AudioTrack atrack ) {}
+    //public void playerAudioTrackCreated( AudioTrack atrack ) {}
 
     private void initializeMediaPlayer() {
 
         try {
             player = new MediaPlayer();
             player.setDataSource(getResources().getString(R.string.urlRadio));
+
+            player.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+
+                @Override
+                public boolean onInfo(MediaPlayer mp, int what, int extra) {
+                    if (what == MediaPlayer.MEDIA_INFO_BUFFERING_END){
+
+                    }
+                    return true;
+                }
+
+            });
 
         } catch (Exception e) {
             EasyTrackerCustom.AddException(null, e, EasyTrackerCustom.TRACK_SERVICELISTEN_INITIALIZEPLAYER);
@@ -474,7 +484,7 @@ public class ServiceListen extends Service implements PlayerCallback {
 
     }
 
-    private void stopPlaying() {
+    public void stopPlaying() {
         if (player.isPlaying()) {
             player.stop();
             player.release();
@@ -526,7 +536,7 @@ public class ServiceListen extends Service implements PlayerCallback {
                     }
 
                     if (!oActivity.getStopListenNotification()) {
-                        startPlayingAAC(); // avvio il player
+                        //startPlayingAAC(); // avvio il player
 
                         // invio messaggio per indicare che il servizio è partito
                         SendMessageStartService();
@@ -535,11 +545,23 @@ public class ServiceListen extends Service implements PlayerCallback {
                         int callWsPalinsesto = 0;
                         boolean allPalinsesto = true;
 
+                        //MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                        //Uri uriStream = Uri.parse(getResources().getString(R.string.urlRadio));
+                        //Uri uriStream = Uri.parse("http://s25.myradiostream.com:5976/listen.pls");
+                        //retriever.setDataSource(oActivity.getBaseContext(), uriStream);
+                        //retriever.setDataSource("http://s25.myradiostream.com:5976/listen.pls");
+
+                        //String artist = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+                        //String title = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+
                         // cycle
                         while (loopWork) {
                             if (oActivity.getStopListenNotification()) loopWork = false;
 
                             SendMessagePlayingMusic();
+
+                            // trovo il titolo della canzone
+                            streamTitle = UtilsFunction.GetShoutCastServer(getResources().getString(R.string.urlMetadata));
 
                             // controllo se devo chiamare il palinsesto
                             if ((callWsPalinsesto == 0) && (oActivity != null)) {
@@ -573,8 +595,8 @@ public class ServiceListen extends Service implements PlayerCallback {
                     palinsestoAll.ITEMS.clear();
                     palinsestoAll.ITEM_MAP.clear();
 
-                    //stopPlaying();
-                    stopPlayingAAC();
+                    stopPlaying();
+                    //stopPlayingAAC();
 
                 } catch (Exception e) {
                     EasyTrackerCustom.AddException(oActivity, e, EasyTrackerCustom.TRACK_ACTION_LOOPSERVICELISTEN);

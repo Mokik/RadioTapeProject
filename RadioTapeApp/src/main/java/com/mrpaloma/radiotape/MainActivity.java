@@ -3,6 +3,7 @@ package com.mrpaloma.radiotape;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -49,6 +50,9 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 
     private String lastImageLoad = "";
     protected void resetLastImageLoad() { lastImageLoad = ""; }
+
+    /** Duration of wait **/
+    private final int SPLASH_DISPLAY_LENGTH = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,7 +203,7 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
         // When the given tab is selected, switch to the corresponding page in
         // the ViewPager.
 
-       if (tab.getPosition() == 0) resetLastImageLoad();
+        if (tab.getPosition() == 0) resetLastImageLoad();
         mViewPager.setCurrentItem(tab.getPosition());
     }
 
@@ -216,7 +220,7 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
         super.onStart();
 
         // controllo se è stato avviato un servizio per inviare itinerario
-        serviceIntentListen = new Intent(this, ServiceListen.class);
+        //serviceIntentListen = new Intent(this, ServiceListen.class);
         StartListenService();
 
         EasyTrackerCustom.AddScreen(this, "Main");
