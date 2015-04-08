@@ -2,6 +2,7 @@ package com.mrpaloma.radiotape;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,9 +52,6 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 
     private String lastImageLoad = "";
     protected void resetLastImageLoad() { lastImageLoad = ""; }
-
-    /** Duration of wait **/
-    private final int SPLASH_DISPLAY_LENGTH = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,11 +111,58 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
             // set what the home action does
-            CharSequence text = "";
-            setTitle(text);
+            //CharSequence text = "";
+            //setTitle(text);
 
-            actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setIcon(R.drawable.ic_launcher);
+            final ViewGroup actionBarLayout = (ViewGroup) getLayoutInflater().inflate(R.layout.custom_actionbar, null);
+            actionBar.setDisplayShowHomeEnabled(false);
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayShowCustomEnabled(true);
+            actionBar.setCustomView(actionBarLayout);
+
+            TextView smsNumber = (TextView)actionBarLayout.findViewById(R.id.txtTelefono);
+            smsNumber.setOnClickListener(new View.OnClickListener(){
+                public void onClick(View v){
+                    sendSms();
+                }
+            });
+
+            ImageView imgM = (ImageView)actionBarLayout.findViewById(R.id.iconTelefonoListen);
+            imgM.setOnClickListener(new View.OnClickListener(){
+                public void onClick(View v){
+                    sendSms();
+                }
+            });
+
+            //actionBar.setDisplayShowHomeEnabled(true);
+            //actionBar.setIcon(R.drawable.ic_launcher);
+
+            //LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+            //getSupportActionBar().setCustomView(segmentView, lp);
+
+            //http://stackoverflow.com/questions/21178860/how-to-add-imageview-on-right-hand-side-of-action-bar
+            //ActionBar actionBar = getActionBar();
+            //actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
+            //ImageView imageView = new ImageView(actionBar.getThemedContext());
+            //imageView.setScaleType(ImageView.ScaleType.CENTER);
+            //imageView.setImageResource(R.drawable.adnace_search_i);
+
+            //ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(
+                    //ActionBar.LayoutParams.WRAP_CONTENT,
+                    //ActionBar.LayoutParams.WRAP_CONTENT, Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+
+            //layoutParams.rightMargin = 40;
+            //imageView.setLayoutParams(layoutParams);
+            //actionBar.setCustomView(imageView);
+
+            //http://stackoverflow.com/questions/5306283/positioning-menu-items-to-the-left-of-the-actionbar-in-honeycomb
+            //ActionBar actionBar = getActionBar();
+            //actionBar = getLayoutInflater().inflate(R.layout.action_bar_custom, null);
+            //actionBar.setCustomView(mActionBarView);
+            //actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+
+            // menu laterale
+            //http://www.androidhive.info/2013/11/android-sliding-menu-using-navigation-drawer/
 
             // Create the adapter that will return a fragment for each of the three
             // primary sections of the activity.
@@ -169,10 +215,18 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
         setIntent(intent);
     }*/
 
+    protected void sendSms() {
+        String phoneNumber = getResources().getString(R.string.numeroTelefono);
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + phoneNumber)));
+
+        EasyTrackerCustom.AddEvent(oActivity, EasyTrackerCustom.TRACK_EVENT, EasyTrackerCustom.TRACK_ACTION_SENDSMS, EasyTrackerCustom.TRACK_LABEL_SENDSMS, null);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return true;
     }
 
@@ -292,16 +346,22 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
                     if ((mSectionsPagerAdapter != null) && (indexSleepButton == 20)) {
                         Fragment tbListien = mSectionsPagerAdapter.getItem(0);
                         if (tbListien != null) {
-                            Button btnPlay = ((TabListen) tbListien).getBtnPlay();
-                            Button btnPause = ((TabListen) tbListien).getBtnPause();
+                            //Button btnPlay = ((TabListen) tbListien).getBtnPlay();
+                            //Button btnPause = ((TabListen) tbListien).getBtnPause();
+                            ImageView imgPlay = ((TabListen) tbListien).getImgPlay();
+                            ImageView imgPause = ((TabListen) tbListien).getImgPause();
 
                             if (playingMusic) {
-                                btnPlay.setVisibility(View.GONE);
-                                btnPause.setVisibility(View.VISIBLE);
+                                //btnPlay.setVisibility(View.GONE);
+                                //btnPause.setVisibility(View.VISIBLE);
+                                imgPlay.setVisibility(View.GONE);
+                                imgPause.setVisibility(View.VISIBLE);
                             }
                             if (!playingMusic) {
-                                btnPlay.setVisibility(View.VISIBLE);
-                                btnPause.setVisibility(View.GONE);
+                                //btnPlay.setVisibility(View.VISIBLE);
+                                //btnPause.setVisibility(View.GONE);
+                                imgPlay.setVisibility(View.VISIBLE);
+                                imgPause.setVisibility(View.GONE);
                             }
                         }
                     } else {
@@ -310,30 +370,32 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
                     indexSleepButton++;
 
                     // palinsesto completo
-                    PalinsestoAll pta = srvListen.getPalinsestoAll();
-                    if ((pta != null) && (pta.ITEMS.size() > 0)) {
-                        Fragment tbProgram = mSectionsPagerAdapter.getItem(1);
-                        if (tbProgram != null) {
-                            ListView lv = ((TabProgrammi) tbProgram).getListView();
+                    if ((srvListen != null) && (mSectionsPagerAdapter != null)) {
+                        PalinsestoAll pta = srvListen.getPalinsestoAll();
+                        if ((pta != null) && (pta.ITEMS.size() > 0)) {
+                            Fragment tbProgram = mSectionsPagerAdapter.getItem(1);
+                            if (tbProgram != null) {
+                                ListView lv = ((TabProgrammi) tbProgram).getListView();
 
-                            TextView loading = (TextView) lv.findViewById(R.id.txtLoading);
-                            if (loading != null) loading.setVisibility(View.GONE);
+                                TextView loading = (TextView) lv.findViewById(R.id.txtLoading);
+                                if (loading != null) loading.setVisibility(View.GONE);
 
-                            ListView list = (ListView) lv.findViewById(R.id.listPalinsesto);
-                            if (list != null) list.setVisibility(View.VISIBLE);
+                                ListView list = (ListView) lv.findViewById(R.id.listPalinsesto);
+                                if (list != null) list.setVisibility(View.VISIBLE);
 
-                            if ((lv != null) && (!updatePalinsestoAll) && (((TabProgrammi) tbProgram).getLoadPalinsesto())) {
-                                updatePalinsestoAll = true;
-                                ((TabProgrammi) tbProgram).setLoadPalinsesto(false);
-                            }
+                                if ((lv != null) && (!updatePalinsestoAll) && (((TabProgrammi) tbProgram).getLoadPalinsesto())) {
+                                    updatePalinsestoAll = true;
+                                    ((TabProgrammi) tbProgram).setLoadPalinsesto(false);
+                                }
 
-                            if ((lv != null) && (updatePalinsestoAll)) {
-                                PalinsestoAdapter adapter = new PalinsestoAdapter(oActivity.getBaseContext(), R.layout.item_giornopalinsesto, pta.ITEMS);
-                                adapter.setActivity(oActivity);
+                                if ((lv != null) && (updatePalinsestoAll)) {
+                                    PalinsestoAdapter adapter = new PalinsestoAdapter(oActivity.getBaseContext(), R.layout.item_giornopalinsesto, pta.ITEMS);
+                                    adapter.setActivity(oActivity);
 
-                                lv.setAdapter(adapter);
+                                    lv.setAdapter(adapter);
 
-                                updatePalinsestoAll = false;
+                                    updatePalinsestoAll = false;
+                                }
                             }
                         }
                     }
@@ -408,6 +470,7 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
             mFragmentsList.add(new TabListen());
             mFragmentsList.add(new TabProgrammi());
             mFragmentsList.add(new TabWrite());
+            mFragmentsList.add(new TabSveglia());
             mFragmentsList.add(new TabInfo());
         }
 
@@ -438,6 +501,8 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
                 return getString(R.string.title_scrivi).toUpperCase(l);
             } else if (fragment instanceof TabProgrammi) {
                 return getString(R.string.title_palinsesto).toUpperCase(l);
+            } else if (fragment instanceof TabSveglia) {
+                return getString(R.string.title_sveglia).toUpperCase(l);
             } else if (fragment instanceof TabInfo) {
                 return getString(R.string.title_info).toUpperCase(l);
             }

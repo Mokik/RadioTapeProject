@@ -8,7 +8,7 @@
         android:id="@+id/lytErrorConnection"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/Marg10"
+        android:layout_margin="@dimen/Marg20"
         android:gravity="center_horizontal"
         android:background="#ffff9642"
         android:visibility="gone">
@@ -24,22 +24,22 @@
 
     <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_margin="@dimen/Marg20">
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="fill_parent"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -84,7 +84,7 @@
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/Marg20"
+                            android:layout_marginTop="@dimen/Marg30"
                             android:orientation="vertical">
 
                             <TextView
@@ -99,7 +99,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textStyle="italic"
-                                android:textSize="@dimen/SizeTextBranoInOnda"
+                                android:textSize="@dimen/SizeTextBranoInOndaTitolo"
                                 android:text="loading..."></TextView>
 
                         </LinearLayout>
@@ -110,29 +110,42 @@
 
                 <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="fill_parent"
                     android:layout_marginTop="@dimen/Marg30"
-                    android:orientation="horizontal">
+                    android:orientation="vertical"
+                    android:gravity="center_vertical">
 
-                    <Button
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/lblButtonPause"
-                        android:id="@+id/btnPause"
-                        android:drawableLeft="@android:drawable/ic_media_pause"
-                        android:layout_gravity="center_horizontal" />
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_horizontal">
 
-                    <Button
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/lblButtonPlay"
-                        android:id="@+id/btnPlay"
-                        android:drawableLeft="@android:drawable/ic_media_play"
-                        android:layout_gravity="center_horizontal"
-                        android:visibility="gone"/>
+                        <ImageView
+                            android:id="@+id/iconPlayListen"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/play6_rotondo"
+                            android:visibility="gone"></ImageView>
+
+                        <ImageView
+                            android:id="@+id/iconPauseListen"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/pause6_rotondo"></ImageView>
+
+                        <ImageView
+                            android:id="@+id/iconShareListen"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/Marg10"
+                            android:src="@drawable/share3_rotondo"></ImageView>
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
+                <!-- text in cui era presente la descrizione del programma -->
                 <TextView
                     android:id="@+id/txtDescrizioneNow"
                     android:layout_width="wrap_content"

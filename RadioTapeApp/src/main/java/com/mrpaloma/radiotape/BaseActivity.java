@@ -54,6 +54,8 @@ public class BaseActivity extends ActionBarActivity {
 
                 if (startPlaying) srvListen.startPlaying();
                 startPlaying = false;
+
+                if (getStopListenNotification()) srvListen.stopPlaying();
             }
 
         }
@@ -172,7 +174,6 @@ public class BaseActivity extends ActionBarActivity {
 
     public void StopListen() {
         if (srvListen != null) {
-
             srvListen.setStopThread();
         }
 
@@ -209,6 +210,17 @@ public class BaseActivity extends ActionBarActivity {
 
     protected void updateControl() {
     }
+
+    /*protected void StartActivitySveglia() {
+
+        // Avvio la nuova Activity
+        Intent detailIntent = new Intent(this, SvegliaActivity.class);
+        //detailIntent.putExtra(PARAM_ANDROIDCODE, sCodiceAndroid);
+
+        startActivity(detailIntent);
+        finish();
+
+    }*/
 
     protected void StartActivitySetting() {
 
@@ -285,10 +297,10 @@ public class BaseActivity extends ActionBarActivity {
                 serviceIntentListen = new Intent(this, ServiceListen.class);
 
                 Context context = this.getBaseContext();
-                //serviceIntentUpload.putExtra(ServiceUploading.PARAM_ACTION_UNIQUEROUTE, getUniqueCode());
+                //serviceIntentListen.putExtra(ServiceListen.PARAM_STOP_MUSIC, getStopNotification(context));
                 //serviceIntentUpload.putExtra(ServiceUploading.PARAM_ACTION_UPLOAD, true);
                 //serviceIntentUpload.putExtra(ServiceUploading.PARAM_ACTION_CREATEFILEKML, false);
-                context.startService(serviceIntentListen);
+                if ((context != null) && (serviceIntentListen != null)) context.startService(serviceIntentListen);
 
                 connectServiceListening(); // collego il servizio per avere informazioni
             }
@@ -298,9 +310,11 @@ public class BaseActivity extends ActionBarActivity {
     public void StopListenService() {
         disconnectServiceListening(); // disconnetto il servizio
 
-        // fermo il servizio
-        Context context = this.getBaseContext();
-        context.stopService(serviceIntentListen);
+		if (serviceIntentListen != null) {
+			// fermo il servizio
+			Context context = this.getBaseContext();
+			if (context != null) context.stopService(serviceIntentListen);		
+		}
     }
 
     // controllo del servizio

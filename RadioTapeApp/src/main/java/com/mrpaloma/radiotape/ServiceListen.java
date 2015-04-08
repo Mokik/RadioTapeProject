@@ -12,6 +12,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -45,6 +46,7 @@ public class ServiceListen extends Service {
     public static int ONGOING_NOTIFICATION_ID = 2;
     public static String PARAM_PALINSESTO_NOW = "1";
     public static String PARAM_PALINSESTO_ALL = "";
+    public static String PARAM_STOP_MUSIC = "StopMusic";
 
     // This is the object that receives interactions from clients.  See
     // RemoteService for a more complete example.
@@ -200,6 +202,14 @@ public class ServiceListen extends Service {
 
             // inizializzo player
             if (player == null) { initializeMediaPlayer(); }
+
+            /*if (intent != null) {
+                Bundle p = intent.getExtras();
+                if (p != null) {
+                    boolean bStopListen = p.getBoolean(PARAM_STOP_MUSIC, false);
+                    if ((player != null) && (bStopListen)) stopPlaying();
+                }
+            }*/
 
             // avvio player
             //if ((player != null) && (!player.isPlaying())) startPlaying();
@@ -474,14 +484,18 @@ public class ServiceListen extends Service {
     public void startPlaying() {
         if (player == null) return;
 
-        player.prepareAsync();
-        player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+        try {
+			player.prepareAsync();
+			player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 
-            public void onPrepared(MediaPlayer mp) {
-                player.start();
-            }
-        });
-
+				public void onPrepared(MediaPlayer mp) {
+					player.start();
+				}
+			});
+			
+        } catch (Exception e) {
+            EasyTrackerCustom.AddException(null, e, "ServiceListen - startPlaying ");
+        }		
     }
 
     public void stopPlaying() {
@@ -528,12 +542,8 @@ public class ServiceListen extends Service {
 
                     // controllo se ho tutti i parametri valorizzati
                     try {
-                        while ((oActivity == null)) {
-                            Thread.sleep(100);
-                        }
-                    } catch (Exception e) {
-                        Log.d(MainActivity.CODE_LOG, "Listen wait param service " + e.getMessage());
-                    }
+                        while ((oActivity == null)) { Thread.sleep(100); }
+                    } catch (Exception e) { Log.d(MainActivity.CODE_LOG, "Listen wait param service " + e.getMessage()); }
 
                     if (!oActivity.getStopListenNotification()) {
                         //startPlayingAAC(); // avvio il player
@@ -597,6 +607,8 @@ public class ServiceListen extends Service {
 
                     stopPlaying();
                     //stopPlayingAAC();
+
+                    if (oActivity.getStopListenNotification()) oActivity.StopListenService();
 
                 } catch (Exception e) {
                     EasyTrackerCustom.AddException(oActivity, e, EasyTrackerCustom.TRACK_ACTION_LOOPSERVICELISTEN);

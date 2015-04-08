@@ -43,7 +43,7 @@ public class TabInfo extends Fragment {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                intent.setData(Uri.parse("https://twitter.com/radiotapenet/"));
+                intent.setData(Uri.parse(getResources().getString(R.string.urlRadioTape)));
                 startActivity(intent);
             }
         });
@@ -54,7 +54,7 @@ public class TabInfo extends Fragment {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                intent.setData(Uri.parse("https://www.facebook.com/RadioTapeNet/"));
+                intent.setData(Uri.parse(getResources().getString(R.string.urlFacebook)));
                 startActivity(intent);
             }
         });
@@ -65,7 +65,18 @@ public class TabInfo extends Fragment {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                intent.setData(Uri.parse("http://www.radiotape.net/"));
+                intent.setData(Uri.parse(getResources().getString(R.string.urlTwitter)));
+                startActivity(intent);
+            }
+        });
+
+        ImageView imgY = (ImageView)oFragmentView.findViewById(R.id.iconYoutube);
+        imgY.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setData(Uri.parse(getResources().getString(R.string.urlYouTube)));
                 startActivity(intent);
             }
         });

@@ -27,6 +27,9 @@ public  class  EasyTrackerCustom {
     public static String TRACK_ACTION_PLAY = "Play";
     public static String TRACK_ACTION_MENUCLOSE = "MenuClose";
     public static String TRACK_ACTION_NOTIFICATIONCLOSE = "NotificationClose";
+    public static String TRACK_ACTION_SHARELISTEN = "ShareListen";
+    public static String TRACK_ACTION_SENDSMS = "SendSms";
+    public static String TRACK_ACTION_SVEGLIA = "Sveglia";
 
     public static String TRACK_EVENT_CONNESSIONEDATI = "ErroreConnessioneDati";
     public static String TRACK_EVENT_REGISTERAPP = "RegisterApp";
@@ -38,6 +41,8 @@ public  class  EasyTrackerCustom {
 
     public static String TRACK_LABEL_PAUSE = "Button";
     public static String TRACK_LABEL_PLAY = "Button";
+    public static String TRACK_LABEL_SHARELISTEN = "Button";
+    public static String TRACK_LABEL_SENDSMS = "Button";
     public static String TRACK_LABEL_BTN_NOTIFICATION = "NotificationButton";
     public static String TRACK_LABEL_BTN_MENU = "MenuButton";
 

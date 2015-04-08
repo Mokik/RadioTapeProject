@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="color_greenradiotape">#FF006770</color>
     <color name="text_tab_selected">#FF009EE2</color>
     <color name="text_tab_unselected">#FFFFFFFF</color>
     <color name="background_splashscreen">#FF006672</color>

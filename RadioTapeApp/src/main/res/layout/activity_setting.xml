@@ -18,7 +18,7 @@
             android:textSize="@dimen/SizeNotificheTesto"
             android:drawablePadding="@dimen/SizePaddingLeftDraw"
             android:gravity="center_vertical"
-            android:drawableLeft="@android:drawable/ic_lock_silent_mode_off">
+            android:textColor="@android:color/black">
         </TextView>
 
         <LinearLayout
