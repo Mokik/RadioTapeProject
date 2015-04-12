@@ -20,8 +20,6 @@ import java.util.Calendar;
  */
 public class SvegliaActivity extends ActionBarActivity {
 
-    private PendingIntent pendingIntent;
-
     private TimePicker timePicker;
 
     private int hour;

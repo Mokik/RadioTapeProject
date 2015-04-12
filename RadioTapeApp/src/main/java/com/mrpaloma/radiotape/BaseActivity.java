@@ -31,6 +31,9 @@ public class BaseActivity extends ActionBarActivity {
     public static final String EXTRA_MESSAGE = "message";
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_STOP_NOTIFICATION = "stopNotification";
+    private static final String PROPERTY_HOUR_SVEGLIA = "hourSveglia";
+    private static final String PROPERTY_MINUTE_SVEGLIA = "minuteSveglia";
+    private static final String PROPERTY_ATTIVA_SVEGLIA = "attivaSveglia";
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String PROPERTY_APP_VERSION = "appVersion";
     public static String CODE_LOG = "RadioTape";
@@ -358,6 +361,44 @@ public class BaseActivity extends ActionBarActivity {
     protected boolean getStopNotification(Context context) {
         final SharedPreferences prefs = getGCMPreferences(context);
         return prefs.getBoolean(PROPERTY_STOP_NOTIFICATION, false);
+    }
+
+    protected void setSveglia(Context context, int hour, int minute) {
+        final SharedPreferences prefs = getGCMPreferences(context);
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(PROPERTY_HOUR_SVEGLIA, hour);
+        editor.putInt(PROPERTY_MINUTE_SVEGLIA, minute);
+        editor.commit();
+    }
+
+    protected int getHourSveglia(Context context) {
+        final SharedPreferences prefs = getGCMPreferences(context);
+
+        return prefs.getInt(PROPERTY_HOUR_SVEGLIA, -1);
+    }
+
+    protected int getMinuteSveglia(Context context) {
+        final SharedPreferences prefs = getGCMPreferences(context);
+
+        return prefs.getInt(PROPERTY_MINUTE_SVEGLIA, -1);
+    }
+
+    protected void setSvegliaAttiva(Context context, boolean attiva) {
+        final SharedPreferences prefs = getGCMPreferences(context);
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(PROPERTY_ATTIVA_SVEGLIA, attiva);
+        editor.commit();
+    }
+
+    protected boolean getSvegliaAttiva(Context context) {
+        final SharedPreferences prefs = getGCMPreferences(context);
+        return prefs.getBoolean(PROPERTY_ATTIVA_SVEGLIA, false);
+    }
+
+    protected boolean getSvegliaImpostata(Context context) {
+        return getSvegliaAttiva(context);
     }
 
     /**

@@ -13,7 +13,7 @@ public class AlarmManagerHelper extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 /*
-DBHelper mDbh = new DBHelper(context, null, null, 1);
+        DBHelper mDbh = new DBHelper(context, null, null, 1);
         mDb = mDbh.getWritableDatabase();
         mDb.setLockingEnabled(true);
         mDba = new DBAdapter(context);

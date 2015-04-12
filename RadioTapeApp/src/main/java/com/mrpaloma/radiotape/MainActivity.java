@@ -1,5 +1,8 @@
 package com.mrpaloma.radiotape;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
@@ -28,6 +31,7 @@ import android.widget.Toast;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 
 
@@ -52,6 +56,8 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 
     private String lastImageLoad = "";
     protected void resetLastImageLoad() { lastImageLoad = ""; }
+
+    private PendingIntent pendingIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -220,6 +226,40 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + phoneNumber)));
 
         EasyTrackerCustom.AddEvent(oActivity, EasyTrackerCustom.TRACK_EVENT, EasyTrackerCustom.TRACK_ACTION_SENDSMS, EasyTrackerCustom.TRACK_LABEL_SENDSMS, null);
+    }
+
+    public void setAlarmClock() {
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.set(Calendar.MONTH, 4);
+        calendar.set(Calendar.YEAR, 2015);
+        calendar.set(Calendar.DAY_OF_MONTH, 12);
+
+        calendar.set(Calendar.HOUR_OF_DAY, getHourSveglia(oActivity.getBaseContext()));
+        calendar.set(Calendar.MINUTE, getMinuteSveglia(oActivity.getBaseContext()));
+        calendar.set(Calendar.SECOND, 0);
+        //calendar.set(Calendar.AM_PM, Calendar.PM);
+
+        Intent myIntent = new Intent(oActivity, AlarmManagerHelper.class);
+        pendingIntent = PendingIntent.getBroadcast(oActivity, 0, myIntent, 0);
+
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+    }
+
+    public void deleteAlarmClock() {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent updateServiceIntent = new Intent(context, MainActivity.class);
+        PendingIntent pendingUpdateIntent = PendingIntent.getService(context, 0, updateServiceIntent, 0);
+
+        // Cancel alarms
+        try {
+            alarmManager.cancel(pendingUpdateIntent);
+
+        } catch (Exception ex) {
+            EasyTrackerCustom.AddException(this, ex, "MainActivity - deleteAlarmClock");
+        }
     }
 
     @Override

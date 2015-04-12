@@ -41,6 +41,9 @@
     <string name="urlFacebook" translatable="false">https://www.facebook.com/RadioTapeNet</string>
     <string name="urlYouTube" translatable="false">https://www.youtube.com/channel/UCHrleMdv_YFzEEo-Z4QRtRw</string>
     <string name="action_sveglia">Sveglia</string>
+    <string name="selezionaOra">Seleziona l\'ora</string>
+    <string name="attiva">ATTIVA</string>
+    <string name="disattiva">DISATTIVA</string>
     <string name="txtInfoApp">Benvenuti su RadioTape!&lt;br/>&lt;br/>Ma...cos\'è &lt;i>RADIOTAPE&lt;/i> ? È un contenitore di idee... esperienze... conoscenze... novità!&lt;br/>&lt;br/>Fatto di persone che hanno un\'idea, una visione: cambiare il modo di fare e vivere la radio, portando qualcosa di nuovo, di folle, svalvolato...</string>
 
 </resources>
