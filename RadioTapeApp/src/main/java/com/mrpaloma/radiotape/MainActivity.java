@@ -71,7 +71,16 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 
             boolean alreadyStop = getStopNotification(context);
             Bundle p = getIntent().getExtras();
-            if ((p != null) && (!alreadyStop)) {
+
+            boolean addDaySveglia = false;
+            if (p!=null) {
+                addDaySveglia = p.getBoolean(BaseActivity.PARAM_ADDDAY_SVEGLIA, false);
+                if (addDaySveglia) setAlarmClock(addDaySveglia);
+
+                p.putBoolean(BaseActivity.PARAM_ADDDAY_SVEGLIA, false);
+            }
+
+            if ((p != null) && (!alreadyStop) && (!addDaySveglia)) {
                 boolean bStopListen = p.getBoolean(ServiceListen.NAME_MESSAGE_STOPSERVICE, false);
                 stopListenNotification = bStopListen;
 
@@ -228,15 +237,35 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
         EasyTrackerCustom.AddEvent(oActivity, EasyTrackerCustom.TRACK_EVENT, EasyTrackerCustom.TRACK_ACTION_SENDSMS, EasyTrackerCustom.TRACK_LABEL_SENDSMS, null);
     }
 
-    public void setAlarmClock() {
+    public void setAlarmClock(boolean addDay) {
         Calendar calendar = Calendar.getInstance();
 
-        calendar.set(Calendar.MONTH, 4);
-        calendar.set(Calendar.YEAR, 2015);
-        calendar.set(Calendar.DAY_OF_MONTH, 12);
+        Calendar now = Calendar.getInstance();
+        int year = now.get(Calendar.YEAR);
+        int month = now.get(Calendar.MONTH); // Note: zero based!
+        int day = now.get(Calendar.DAY_OF_MONTH);
+        int hour = now.get(Calendar.HOUR_OF_DAY);
+        int minute = now.get(Calendar.MINUTE);
+        //int second = now.get(Calendar.SECOND);
+        //int millis = now.get(Calendar.MILLISECOND);
 
-        calendar.set(Calendar.HOUR_OF_DAY, getHourSveglia(oActivity.getBaseContext()));
-        calendar.set(Calendar.MINUTE, getMinuteSveglia(oActivity.getBaseContext()));
+        int hourSveglia = getHourSveglia(oActivity.getBaseContext());
+        int minuteSveglia = getMinuteSveglia(oActivity.getBaseContext());
+
+        if (((hour > hourSveglia)) || ((hourSveglia == hour) && ((minute >= minuteSveglia))) || (addDay)) {
+            now.add(Calendar.DAY_OF_MONTH, 1);
+
+            year = now.get(Calendar.YEAR);
+            month = now.get(Calendar.MONTH); // Note: zero based!
+            day = now.get(Calendar.DAY_OF_MONTH);
+        }
+
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+
+        calendar.set(Calendar.HOUR_OF_DAY, hourSveglia);
+        calendar.set(Calendar.MINUTE, minuteSveglia);
         calendar.set(Calendar.SECOND, 0);
         //calendar.set(Calendar.AM_PM, Calendar.PM);
 
@@ -244,7 +273,7 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
         pendingIntent = PendingIntent.getBroadcast(oActivity, 0, myIntent, 0);
 
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
     public void deleteAlarmClock() {
@@ -509,8 +538,8 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 
             mFragmentsList.add(new TabListen());
             mFragmentsList.add(new TabProgrammi());
-            mFragmentsList.add(new TabWrite());
             mFragmentsList.add(new TabSveglia());
+            mFragmentsList.add(new TabWrite());
             mFragmentsList.add(new TabInfo());
         }
 

@@ -54,7 +54,7 @@ public class TabSveglia extends Fragment {
         txtAttiva.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 oActivity.setSveglia(oActivity.getBaseContext(), Integer.parseInt(txtHour.getText().toString()), Integer.parseInt(txtMinuti.getText().toString()));
-                oActivity.setAlarmClock();
+                oActivity.setAlarmClock(false);
 
                 oActivity.setSvegliaAttiva(oActivity.getBaseContext(), true);
                 checkTextSveglia();
@@ -126,7 +126,10 @@ public class TabSveglia extends Fragment {
                 txtMinuti.setText(minute);
 
                 oActivity.setSveglia(oActivity.getBaseContext(), selectedHour, selectedMinute);
-                if (oActivity.getSvegliaImpostata(oActivity.getBaseContext())) oActivity.setSveglia(oActivity.getBaseContext(), Integer.parseInt(txtHour.getText().toString()), Integer.parseInt(txtMinuti.getText().toString()));
+                if (oActivity.getSvegliaImpostata(oActivity.getBaseContext())) {
+                    oActivity.setSveglia(oActivity.getBaseContext(), Integer.parseInt(txtHour.getText().toString()), Integer.parseInt(txtMinuti.getText().toString()));
+                    oActivity.setAlarmClock(false);
+                }
 
             }
 

@@ -33,5 +33,5 @@
     <dimen name="HeightImageProgramma">180dp</dimen>
     <dimen name="SizeTextNumeroTelefono">21dp</dimen>
     <dimen name="SizeNumSveglia">100dp</dimen>
-    <dimen name="SizeAttivaDisattivaSveglia">35dp</dimen>
+    <dimen name="SizeAttivaDisattivaSveglia">30dp</dimen>
 </resources>

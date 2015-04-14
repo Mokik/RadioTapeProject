@@ -17,6 +17,8 @@ public class SplashActivity extends Activity {
 
     static Intent serviceIntentListen = null;
 
+    private boolean addDaySveglia = false;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle icicle) {
@@ -31,17 +33,23 @@ public class SplashActivity extends Activity {
 
                 /* Create an Intent that will start the Menu-Activity. */
                 Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
+                mainIntent.putExtra(BaseActivity.PARAM_ADDDAY_SVEGLIA, addDaySveglia);
+
                 SplashActivity.this.startActivity(mainIntent);
                 SplashActivity.this.finish();
 
             }
         }, SPLASH_DISPLAY_LENGTH);
 
-
         serviceIntentListen = new Intent(this, ServiceListen.class);
 
         Context context = this.getBaseContext();
         context.startService(serviceIntentListen);
 
+        Bundle p = getIntent().getExtras();
+        if (p != null) {
+            addDaySveglia = p.getBoolean(BaseActivity.PARAM_ADDDAY_SVEGLIA, false);
+
+        }
     }
 }

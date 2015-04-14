@@ -1,9 +1,10 @@
 package com.mrpaloma.radiotape;
 
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
+import java.util.Calendar;
 
 /**
  * Created by MicheleMaccini on 04/04/2015.
@@ -12,16 +13,33 @@ public class AlarmManagerHelper extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        //Intent detailIntent = new Intent(this, SplashActivity.class);
+        //detailIntent.putExtra(PARAM_ANDROIDCODE, sCodiceAndroid);
+        //startActivity(detailIntent);
+
+        //Intent serviceIntentListen = new Intent(this, ServiceListen.class);
+
+        //startActivity(intent);
+
+        Intent service = new Intent(context, SplashActivity.class);
+        service.putExtra(BaseActivity.PARAM_ADDDAY_SVEGLIA, true);
+        service.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(service);
+
+        //Intent serviceIntentListen = new Intent(context, ServiceListen.class);
+        //context.startService(serviceIntentListen);
+
 /*
         DBHelper mDbh = new DBHelper(context, null, null, 1);
         mDb = mDbh.getWritableDatabase();
         mDb.setLockingEnabled(true);
         mDba = new DBAdapter(context);
         mDba.open();
-        Cursor cr = mDb.query("mReminderEntry", null, null, null, null,
-                null, null);
+
+        Cursor cr = mDb.query("mReminderEntry", null, null, null, null, null, null);
         if (cr.equals(null)) {
             System.out.println("No Data Found");
+
         } else {
             Date d = new Date();
             Calendar calendar = Calendar.getInstance();
