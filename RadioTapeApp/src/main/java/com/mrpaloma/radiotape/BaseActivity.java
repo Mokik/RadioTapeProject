@@ -34,7 +34,7 @@ public class BaseActivity extends ActionBarActivity {
     private static final String PROPERTY_STOP_NOTIFICATION = "stopNotification";
     private static final String PROPERTY_HOUR_SVEGLIA = "hourSveglia";
     private static final String PROPERTY_MINUTE_SVEGLIA = "minuteSveglia";
-    private static final String PROPERTY_ATTIVA_SVEGLIA = "attivaSveglia";
+    public static final String PROPERTY_ATTIVA_SVEGLIA = "attivaSveglia";
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String PROPERTY_APP_VERSION = "appVersion";

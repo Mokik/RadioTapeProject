@@ -1,8 +1,11 @@
 package com.mrpaloma.radiotape;
 
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.PowerManager;
 
 import java.util.Calendar;
 
@@ -21,10 +24,32 @@ public class AlarmManagerHelper extends BroadcastReceiver {
 
         //startActivity(intent);
 
-        Intent service = new Intent(context, SplashActivity.class);
-        service.putExtra(BaseActivity.PARAM_ADDDAY_SVEGLIA, true);
-        service.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(service);
+        // controllo se la sveglia è attiva
+        SharedPreferences prefs = context.getSharedPreferences(BaseActivity.class.getSimpleName(), Context.MODE_PRIVATE);
+        boolean active = prefs.getBoolean(BaseActivity.PROPERTY_ATTIVA_SVEGLIA, false);
+
+        if (active) {
+            active = true;
+
+            // controllo se il servizio è già in esecuzione
+            ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+                if (ServiceListen.class.getName().equals(service.service.getClassName())) {
+                    active = false;
+                }
+            }
+
+            if (active) {
+                PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+                PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "RadioTape");
+                wl.acquire();
+
+                Intent service = new Intent(context, SplashActivity.class);
+                service.putExtra(BaseActivity.PARAM_ADDDAY_SVEGLIA, true);
+                service.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(service);
+            }
+        }
 
         //Intent serviceIntentListen = new Intent(context, ServiceListen.class);
         //context.startService(serviceIntentListen);

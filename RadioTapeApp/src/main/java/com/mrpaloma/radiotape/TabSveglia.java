@@ -64,7 +64,7 @@ public class TabSveglia extends Fragment {
         txtDisattiva = (TextView)oFragmentView.findViewById(R.id.lblDisattiva);
         txtDisattiva.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                oActivity.setSveglia(oActivity.getBaseContext(), -1, -1);
+                //oActivity.setSveglia(oActivity.getBaseContext(), -1, -1);
                 oActivity.deleteAlarmClock();
 
                 oActivity.setSvegliaAttiva(oActivity.getBaseContext(), false);
@@ -89,21 +89,22 @@ public class TabSveglia extends Fragment {
             txtAttiva.setVisibility(View.VISIBLE);
             txtDisattiva.setVisibility(View.GONE);
 
-            oActivity.setSveglia(oActivity.getBaseContext(), -1, -1);
+            //oActivity.setSveglia(oActivity.getBaseContext(), -1, -1);
 
         } else {
             txtAttiva.setVisibility(View.GONE);
             txtDisattiva.setVisibility(View.VISIBLE);
 
-            String sHour = hour + "";
-            if (hour < 10) { sHour = "0" + hour; }
-
-            String sMinute = minute + "";
-            if (minute < 10) { sMinute = "0" + minute; }
-
-            if (hour >= 0) txtHour.setText(sHour);
-            if (minute >= 0)txtMinuti.setText(sMinute);
         }
+
+        String sHour = hour + "";
+        if (hour < 10) { sHour = "0" + hour; }
+
+        String sMinute = minute + "";
+        if (minute < 10) { sMinute = "0" + minute; }
+
+        if (hour >= 0) txtHour.setText(sHour);
+        if (minute >= 0)txtMinuti.setText(sMinute);
     }
 
     protected void showTimePicker() {

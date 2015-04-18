@@ -551,8 +551,10 @@ public class ServiceListen extends Service {
                         // invio messaggio per indicare che il servizio è partito
                         SendMessageStartService();
 
-                        int timeSleep = 3000;
+                        int timeSleep = 500;
                         int callWsPalinsesto = 0;
+                        int iCountTre = 7; // così al primo giro faccio tutti i controlli
+
                         boolean allPalinsesto = true;
 
                         //MediaMetadataRetriever retriever = new MediaMetadataRetriever();
@@ -568,33 +570,39 @@ public class ServiceListen extends Service {
                         while (loopWork) {
                             if (oActivity.getStopListenNotification()) loopWork = false;
 
-                            SendMessagePlayingMusic();
+                            // queste operazioni posso controllarle meno di ogni secondo
+                            if (iCountTre > 6) {
+                                SendMessagePlayingMusic();
 
-                            // trovo il titolo della canzone
-                            streamTitle = UtilsFunction.GetShoutCastServer(getResources().getString(R.string.urlMetadata));
+                                // trovo il titolo della canzone
+                                streamTitle = UtilsFunction.GetShoutCastServer(getResources().getString(R.string.urlMetadata));
 
-                            // controllo se devo chiamare il palinsesto
-                            if ((callWsPalinsesto == 0) && (oActivity != null)) {
-                                if (BaseActivity.getIsConnection(oActivity)) {
-                                    if (palinsestoToday != null) palinsestoToday.ITEMS.clear();
-                                    invokeWSPalinsesto(PARAM_PALINSESTO_NOW);
+                                // controllo se devo chiamare il palinsesto
+                                if ((callWsPalinsesto == 0) && (oActivity != null)) {
+                                    if (BaseActivity.getIsConnection(oActivity)) {
+                                        if (palinsestoToday != null) palinsestoToday.ITEMS.clear();
+                                        invokeWSPalinsesto(PARAM_PALINSESTO_NOW);
+                                    }
+                                    callWsPalinsesto++;
+
+                                } else {
+                                    callWsPalinsesto++;
+                                    if (callWsPalinsesto > 10) callWsPalinsesto = 0;
                                 }
-                                callWsPalinsesto++;
 
-                            } else {
-                                callWsPalinsesto++;
-                                if (callWsPalinsesto > 10) callWsPalinsesto = 0;
-                            }
+                                // controllo tutto il palinsesto
+                                if (allPalinsesto) {
+                                    if (palinsestoAll != null) palinsestoAll.ITEMS.clear();
 
-                            // controllo tutto il palinsesto
-                            if (allPalinsesto) {
-                                if (palinsestoAll != null) palinsestoAll.ITEMS.clear();
-
-                                if (BaseActivity.getIsConnection(oActivity)) {
-                                    invokeWSPalinsesto(PARAM_PALINSESTO_ALL);
-                                    allPalinsesto = false;
+                                    if (BaseActivity.getIsConnection(oActivity)) {
+                                        invokeWSPalinsesto(PARAM_PALINSESTO_ALL);
+                                        allPalinsesto = false;
+                                    }
                                 }
+
+                                iCountTre = 0;
                             }
+                            iCountTre++;
 
                             Thread.sleep(timeSleep);
                         }

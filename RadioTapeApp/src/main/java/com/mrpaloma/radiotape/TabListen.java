@@ -149,7 +149,7 @@ public class TabListen extends Fragment {
     protected void shareListen() {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, "Ascolta RadioTape. " + getResources().getString(R.string.urlRadioTape));
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "RadioTape. " + getResources().getString(R.string.urlRadioTape));
         sendIntent.setType("text/plain");
         startActivity(sendIntent);
 

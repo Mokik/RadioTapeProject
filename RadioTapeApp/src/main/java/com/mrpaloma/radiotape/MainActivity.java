@@ -469,7 +469,6 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
                         }
                     }
                 }
-
             }
 
         } catch (Exception ex) {
