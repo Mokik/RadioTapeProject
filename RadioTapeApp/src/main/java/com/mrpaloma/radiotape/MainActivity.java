@@ -21,6 +21,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,7 +55,7 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
     ViewPager mViewPager;
 
     int indexSleepButton = 1;
-
+    private Window wind;
     private String lastImageLoad = "";
     protected void resetLastImageLoad() { lastImageLoad = ""; }
 
@@ -238,6 +240,8 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
     }
 
     public void setAlarmClock(boolean addDay) {
+        deleteAlarmClock();
+
         Calendar calendar = Calendar.getInstance();
 
         Calendar now = Calendar.getInstance();
@@ -347,6 +351,19 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
         StartListenService();
 
         EasyTrackerCustom.AddScreen(this, "Main");
+    }
+
+    @Override
+    protected void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+
+        /******block is needed to raise the application if the lock is*********/
+        wind = this.getWindow();
+        wind.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+        wind.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        wind.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+        /******block is needed to raise the application if the lock is*********/
     }
 
     protected void updateControl() {
