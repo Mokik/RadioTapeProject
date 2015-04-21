@@ -40,14 +40,28 @@ public class AlarmManagerHelper extends BroadcastReceiver {
             }
 
             if (active) {
-                PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "RadioTape");
-                wl.acquire();
+                active = true;
 
-                Intent service = new Intent(context, SplashActivity.class);
-                service.putExtra(BaseActivity.PARAM_ADDDAY_SVEGLIA, true);
-                service.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(service);
+                Calendar now = Calendar.getInstance();
+
+                int hour = now.get(Calendar.HOUR_OF_DAY);
+                int minute = now.get(Calendar.MINUTE);
+
+                int hourSveglia = prefs.getInt(BaseActivity.PROPERTY_HOUR_SVEGLIA, -1);
+                int minuteSveglia = prefs.getInt(BaseActivity.PROPERTY_MINUTE_SVEGLIA, -1);
+
+                active = ((hour == hourSveglia) && (minute == minuteSveglia));
+
+                if (active) {
+                    PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+                    PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "RadioTape");
+                    wl.acquire();
+
+                    Intent service = new Intent(context, SplashActivity.class);
+                    service.putExtra(BaseActivity.PARAM_ADDDAY_SVEGLIA, true);
+                    service.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(service);
+                }
             }
         }
 

@@ -32,8 +32,8 @@ public class BaseActivity extends ActionBarActivity {
     public static final String PROPERTY_REG_ID = "registration_id";
 
     private static final String PROPERTY_STOP_NOTIFICATION = "stopNotification";
-    private static final String PROPERTY_HOUR_SVEGLIA = "hourSveglia";
-    private static final String PROPERTY_MINUTE_SVEGLIA = "minuteSveglia";
+    public static final String PROPERTY_HOUR_SVEGLIA = "hourSveglia";
+    public static final String PROPERTY_MINUTE_SVEGLIA = "minuteSveglia";
     public static final String PROPERTY_ATTIVA_SVEGLIA = "attivaSveglia";
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
