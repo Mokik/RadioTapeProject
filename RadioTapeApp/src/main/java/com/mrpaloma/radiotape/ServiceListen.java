@@ -107,6 +107,8 @@ public class ServiceListen extends Service {
                 piParam[0].setType(String.class);
 
                 SoapObject response = UtilsFunction.CallWebService(oActivity, "GetPalinsesto", piParam);
+                if (response == null) { return null; }
+
                 SoapObject resultWs = (SoapObject) response.getProperty(1);
 
                 for (int i = 0; i < resultWs.getPropertyCount(); i++) {
@@ -509,7 +511,7 @@ public class ServiceListen extends Service {
     public void pausePlaying() {
         if (player != null) {
             if (player.isPlaying()) {
-                player.stop();
+                stopPlaying();
             }
         }
     }
