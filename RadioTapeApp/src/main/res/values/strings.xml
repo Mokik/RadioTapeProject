@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name" translatable="false">RadioTape</string>
+    <string name="app_name" translatable="false">Radio16</string>
     <string name="local_service_listen_started" translatable="false">Buffering...</string>
     <string name="ServiceListen" translatable="false">ServiceListen</string>
     <string name="title_ascolta">Ascolta</string>
@@ -12,11 +12,11 @@
     <string name="title_activity_setting">Impostazioni</string>
     <string name="title_activity_sveglia">Sveglia</string>
     <string name="action_settings">Impostazioni</string>
-    <string name="title_activity_splahscreen" translatable="false">RadioTape</string>
+    <string name="title_activity_splahscreen" translatable="false">Radio16</string>
     <string name="action_exits">Chiudi</string>
-    <string name="urlRadioAAC" translatable="false">http://nr5.newradio.it:8843/;</string>
-    <string name="urlRadio" translatable="false">http://s25.myradiostream.com:5976/;</string>
-    <string name="urlMetadata" translatable="false">http://s25.myradiostream.com:5976/admin.cgi?mode=viewxml&amp;page=1&amp;sid=1</string>
+    <string name="urlRadioAAC" translatable="false">http://listen.shoutcast.com/RadioSedici</string>
+    <string name="urlRadio" translatable="false">http://listen.shoutcast.com/RadioSedici</string>
+    <string name="urlMetadata" translatable="false">http://s40.myradiostream.com:10466/admin.cgi?mode=viewxml&amp;page=1&amp;sid=1</string>
     <string name="lblMessage">Scrivi qui il tuo messaggio</string>
     <string name="lblButtonInviaMessaggio">Invia</string>
     <string name="txtInvioAvvenutoConSuccesso">Invio avvenuto con successo</string>
@@ -33,17 +33,17 @@
     <string name="tipo_app" translatable="false">RDIOTAPE</string>
     <string name="txtErrorConnection" translatable="false">Error connection data...</string>
     <string name="txtInizioOre">Dalle: </string>
-    <string name="urlImageInfo" translatable="false">http://www.mrpaloma.com/radiotape/info01.jpg</string>
+    <string name="urlImageInfo" translatable="false">http://www.mrpaloma.com/radio16/info01.jpg</string>
     <string name="txtBranoInOnda">Brano in onda:</string>
     <string name="numeroTelefono" translatable="false">+39 344 284 41 88</string>
-    <string name="urlRadioTape" translatable="false">http://www.radiotape.net</string>
-    <string name="urlTwitter" translatable="false">https://twitter.com/radiotapenet</string>
-    <string name="urlFacebook" translatable="false">https://www.facebook.com/RadioTapeNet</string>
-    <string name="urlYouTube" translatable="false">https://www.youtube.com/channel/UCHrleMdv_YFzEEo-Z4QRtRw</string>
+    <string name="urlRadioTape" translatable="false">http://www.radio16.it</string>
+    <string name="urlTwitter" translatable="false">https://twitter.com/R16web</string>
+    <string name="urlFacebook" translatable="false">https://www.facebook.com/Radio16web</string>
+    <string name="urlYouTube" translatable="false">https://www.youtube.com/channel/UCHCktgsbyt_4ZMKpZVeIkwQ</string>
     <string name="action_sveglia">Sveglia</string>
     <string name="selezionaOra">Seleziona l\'ora</string>
     <string name="attiva">ATTIVA</string>
     <string name="disattiva">DISATTIVA</string>
-    <string name="txtInfoApp">Benvenuti su RadioTape!&lt;br/>&lt;br/>Ma...cos\'è &lt;i>RADIOTAPE&lt;/i> ? È un contenitore di idee... esperienze... conoscenze... novità!&lt;br/>&lt;br/>Fatto di persone che hanno un\'idea, una visione: cambiare il modo di fare e vivere la radio, portando qualcosa di nuovo, di folle, svalvolato...</string>
+    <string name="txtInfoApp" translatable="false">&lt;i>Radio16&lt;/i> è una web radio che nasce delle esperienze di Radio Soppalco e Radio Tape, unendo la passione comune di alcuni ragazzi della provincia di Parma.&lt;br/>&lt;br/>Radio16 vuole essere un contenitore di musica, cultura ed eventi. Lo studio di Soragna ed il microfono sono ciò che mettiamo a disposizione a chiunque abbia qualcosa da condividere con il mondo, per dare spazio alla creatività e amplificare la voce di chi ha qualcosa da condividere.&lt;br/>&lt;br/>Programmi di attualità, musica e intrattenimento, conditi da spazi dedicati a rotazioni musicali per tutti i gusti, strizzando l\'occhio alla scena indipendente.&lt;br/>&lt;br/>Grazie a molteplici collaborazioni cerchiamo di creare momenti di aggregazione al di fuori del nostro studio, organizzando eventi e seguendo in presa diretta festival e rassegne che danno un valore aggiunto alla nostra quotidianità.&lt;br/>&lt;br/>Il nostro cleim “Se dici radio dici...” racchiude tutto questo e lascia un finale aperto da poter riempire ognuno con il proprio messaggio, la propria esperienza e la propria passione.&lt;br/>&lt;br/>Non ti resta che seguirci 24 ore su 24 sul nostro sito &lt;a href="http://www.radio16.it">www.radio16.it&lt;/a> per rimanere sempre aggiornato sulle nostre attività e ascoltarci quando vuoi tu. Se ti va non esitare a contattarci alla nostra mail oppure sui nostri social.&lt;br/></string>
 
 </resources>

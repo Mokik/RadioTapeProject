@@ -3,7 +3,9 @@
     <color name="color_greenradiotape">#FF006770</color>
     <color name="text_tab_selected">#FF009EE2</color>
     <color name="text_tab_unselected">#FFFFFFFF</color>
-    <color name="background_splashscreen">#FF006672</color>
+    <color name="background_splashscreen">#FFFFFFFF</color>
+    <color name="background_tab">#FFFFFFFF</color>
 
-
+    <color name="color_violaradio16">#393452</color>
+    <color name="color_azzurroradio16">#00BAAA</color>
 </resources>

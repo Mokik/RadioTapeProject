@@ -16,8 +16,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/timePickerSveglia" />
 
-
-
     </LinearLayout>
 
 </LinearLayout>

@@ -13,12 +13,12 @@
         <!-- http://developer.android.com/guide/topics/ui/actionbar.html#Style -->
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/TabTextStyle</item>
-        <item name="android:actionMenuTextColor">@color/color_greenradiotape</item>
+        <item name="android:actionMenuTextColor">@color/color_violaradio16</item>
 
         <!-- Support library compatibility -->
         <item name="actionBarStyle">@style/MyActionBar</item>
         <item name="actionBarTabTextStyle">@style/TabTextStyle</item>
-        <item name="actionMenuTextColor">@color/color_greenradiotape</item>
+        <item name="actionMenuTextColor">@color/color_violaradio16</item>
     </style>
 
     <!-- general styles for the action bar -->
@@ -35,12 +35,12 @@
 
 <!-- action bar title text -->
     <style name="TitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/color_greenradiotape</item>
+        <item name="android:textColor">@color/color_violaradio16</item>
     </style>
 
     <!-- action bar tab text -->
     <style name="TabTextStyle" parent="@style/Widget.AppCompat.ActionBar.TabText">
-        <item name="android:textColor">@color/color_greenradiotape</item>
+        <item name="android:textColor">@color/color_violaradio16</item>
     </style>
 
     <!--<style name="AppTheme.ActionBar.TabText" parent="android:style/Widget.Holo.ActionBar.TabText">
